@@ -1,0 +1,276 @@
+classDiagram
+    direction BT
+
+    %% ============== Core Application ==============
+    class Main {
+        +start(Stage): void
+        +main(String[]): void
+    }
+
+    %% ============== Views ==============
+    class LoginView {
+        <<FXML>>
+        +TextField nomField
+        +TextField idField
+        +PasswordField passwordField
+        +Button connexionButton
+        +Button inscriptionButton
+    }
+
+    class MenuView {
+        <<FXML>>
+        +StackPane contentPane
+        +Label Username
+        +Button btnMode
+        +Button btnAccueil
+        +Button btnClassement
+        +Button btnImage
+    }
+
+    class ModeView {
+        <<FXML>>
+        +Button classiqueBtn
+        +Button mortSubiteBtn
+        +Button devinetteBtn
+        +ChoiceBox Difficulty
+    }
+
+    class TextChoiceView {
+        <<FXML>>
+        +TableView tableTextes
+        +TableColumn colTitre
+        +TableColumn colCreateur
+        +Button btnVoirTexte
+        +Button btnSelectionner
+    }
+
+    class UploadFileView {
+        <<FXML>>
+        +TextField txtTitre
+        +TextArea txtResultat
+        +Button chooseImageBtn
+        +Button btnAjouter
+    }
+
+    %% ============== Controllers ==============
+    class LoginController {
+        +handleConnexion(ActionEvent)
+        +handleInscription(ActionEvent)
+        -validateForm(): boolean
+    }
+
+    class MenuController {
+        +loadModeView()
+        +loadAccueilView()
+        +loadInscriptionView()
+        +loadUploadView()
+        +setUserName(String)
+    }
+
+     class ClassementController {
+            <<FXML>>
+            +initialize(): void
+            +setGameConfigService(service GameConfigService)
+            +handleUserScore(): void
+        }
+
+    class ModeController {
+        +handleClassique()
+        +handleMortSubite()
+        +handleDevinette()
+        +handleEntrainement()
+        +redirectToChoiceText()
+    }
+
+    class TextChoiceController {
+        +ShowTexte()
+        -currentTexte: Texte
+    }
+
+    class OcrController {
+        +onChoisirImage()
+        +onAjout()
+    }
+
+    %% ============== Models ==============
+    class User {
+        <<record>>
+        +id: int
+        +name: String
+        +password: String
+    }
+
+    class Classement {
+            <<record>>
+            +score: int
+            +name: String
+        }
+
+    class Texte {
+        <<record>>
+        +id: int
+        +title: String
+        +content: String
+        +difficulty: Difficulty
+        +creator: String
+    }
+
+    class ViewWithController {
+        <<record>>
+        +view: Parent
+        +controller: Object
+    }
+
+    class Auth {
+        +validateForm(name: String, id: String, password: String): boolean
+    }
+
+    class OcrModel {
+        -tesseract: Tesseract
+        +scan(): String
+        +setFileToScan(String)
+    }
+
+    %% ============== Enums ==============
+    class Difficulty {
+        <<enum>>
+        easy
+        normal
+        hardcore
+    }
+
+    class Mode {
+        <<enum>>
+        CLASSIC
+        MORTSUBITE
+        DEVINETTE
+        ENTRAINEMENT
+    }
+
+    %% ============== Repository Layer ==============
+    class UserRepository {
+        -userCache: Map~Integer,User~
+        +checkData(User): Optional~User~
+        +saveUser(User): int
+    }
+
+    class TextRepository {
+        -textCache: Map~Integer,Texte~
+        +getTextes(): List~Texte~
+    }
+
+    class ConnectionManager {
+        <<singleton>>
+        -connection: Connection
+        +getConnection(): Connection
+        +close(): void
+    }
+
+    class RepositoryException {
+        +RepositoryException(String, Throwable)
+    }
+
+    class UserDao {
+        -connection: Connection
+        -formatter: DateTimeFormatter
+        +UserDao(Connection)
+        +checkData(User): Optional~User~
+        +findAll(): List~User~
+        +saveUser(User): int
+        +deleteById(int): void
+    }
+
+    class TextDao {
+        -connection: Connection
+        +TextDao(Connection)
+        +findAll(): List~Texte~
+    }
+
+    class ClassementRepository {
+        -classementDao: ClassementDao
+        -classementCache: Map~Integer,String~
+        +getClassement(mode, texteId, difficulty): List~Classement~
+        +getRecord(mode, id, texteId, difficulty): int
+        +addScore(mode, difficulty, user, score, textId): boolean
+    }
+
+    class ClassementDao {
+        -connection: Connection
+        +getClassement(mode, texteId, difficulty): List~Classement~
+        +getRecord(mode, userId, texteId, difficulty): int
+        +addScore(mode, difficulty, user, score, texteId): boolean
+    }
+
+
+
+    %% =============== Services ========================
+
+       class ClassementService {
+            +getTopScores(mode, texteId, difficulty): List~Classement~
+            +getUserRecord(mode, userId, texteId, difficulty): int
+        }
+
+        class GameConfigService {
+            +getUser(): User
+        }
+
+        class TexteService {
+            +getTextes(): List~Texte~
+        }
+
+    %% ============== Core Relationships ==============
+    Main --> LoginView
+
+    LoginView ..> LoginController
+    MenuView ..> MenuController
+    ModeView ..> ModeController
+    TextChoiceView ..> TextChoiceController
+    UploadFileView ..> OcrController
+
+    LoginController --> UserRepository
+    MenuController --> ModeView
+    MenuController --> TextChoiceView
+    MenuController --> UploadFileView
+
+    ClassementController --> ClassementService
+    ClassementController --> GameConfigService
+    ClassementController --> TexteService
+    ClassementController --> Classement
+
+    ModeController --> TextChoiceView
+    TextChoiceController --> TextRepository
+    OcrController --> OcrModel
+    OcrController --> TextRepository
+
+    UserRepository --> UserDao
+    TextRepository --> TextDao
+    UserDao --> ConnectionManager
+    TextDao --> ConnectionManager
+
+    UserDao --> User
+    TextDao --> Texte
+
+    TextRepository --> Texte
+    UserRepository --> User
+
+    OcrModel --> Tesseract
+
+    %% ============== Additional Relationships ==============
+    TextChoiceController --> Texte
+    ModeController --> Difficulty
+    ModeController --> Mode
+    Texte --> Difficulty
+
+    ConnectionManager --> RepositoryException
+    UserDao --> RepositoryException
+    TextDao --> RepositoryException
+
+    ClassementRepository --> ClassementDao
+    ClassementDao --> Classement
+    ClassementDao --> User
+    ClassementDao --> Mode
+    ClassementDao --> Difficulty
+
+    ClassementService --> ClassementRepository
+    ClassementService --> User
+    ClassementService --> Mode

@@ -1,0 +1,185 @@
+
+/* === Thème Noir Graphite Rouge - Finalisé === */
+
+.root {
+    -fx-background-color: linear-gradient(to bottom, #1a1a1a, #000000);
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Titre principal */
+.app-title {
+    -fx-font-size: 32px;
+    -fx-text-fill: #ff4c4c;
+    -fx-font-weight: bold;
+}
+
+/* Boutons de mode */
+.mode-button {
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-cursor: hand;
+    -fx-pref-width: 160;
+    -fx-pref-height: 70;
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 2);
+}
+
+/* Effet hover */
+.mode-button:hover {
+    -fx-background-color: #ff3333;
+    -fx-text-fill: white;
+    -fx-scale-x: 1.06;
+    -fx-scale-y: 1.06;
+}
+
+/* Bouton actif */
+.selected-mode {
+    -fx-background-color: #ff4c4c;
+    -fx-text-fill: black;
+    -fx-scale-x: 1.10;
+    -fx-scale-y: 1.10;
+    -fx-effect: dropshadow(two-pass-box, rgba(255, 76, 76, 0.8), 12, 0.3, 0, 0);
+}
+
+/* ChoiceBox */
+.choice-box {
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-pref-width: 160;
+    -fx-padding: 4 10;
+}
+
+.selected-difficulty {
+    -fx-border-color: #ff4c4c;
+    -fx-border-width: 2px;
+}
+
+/* Aperçu */
+.preview-box {
+    -fx-background-color: #1f1f1f;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-max-width: 300;
+    -fx-border-color: #ff4c4c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10;
+}
+
+.preview-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff4c4c;
+}
+
+#modeDescriptionLabel {
+    -fx-font-size: 14px;
+    -fx-text-fill: #f0f0f0;
+    -fx-wrap-text: true;
+}
+
+/* Bouton suivant */
+.next-button {
+    -fx-background-color: #b30000;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 10 20;
+}
+
+.next-button:hover {
+    -fx-background-color: #e60000;
+}
+/* Nom d'utilisateur affiché en haut */
+.menu-username {
+    -fx-text-fill: #ff4c4c;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Champs de texte (TextField, PasswordField) stylés comme les choice-box */
+.text-field, .password-field, .choice-box {
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-pref-width: 200;
+    -fx-padding: 6 10;
+}
+
+.text-field:focused, .password-field:focused, .choice-box:focused {
+    -fx-border-color: #ff4c4c;
+    -fx-border-width: 2;
+}
+/* Applique à tous les TableView */
+.table-view {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #ff4c4c;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-table-cell-border-color: transparent;
+    -fx-control-inner-background: #1f1f1f;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10;
+}
+
+/* En-tête de colonnes */
+.table-view .column-header-background {
+    -fx-background-color: #3a3a3a;
+}
+
+/* Lignes normales */
+.table-view .table-row-cell {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: transparent;
+}
+
+/* Lignes sélectionnées */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #ff4c4c;
+    -fx-text-fill: #000000;
+}
+
+.choice-box, .combo-box {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ff4c4c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.choice-box .label {
+    -fx-text-fill: white;
+}
+
+/* Amélioration générale pour tous les labels */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+/* Fond et texte du menu déroulant de la ChoiceBox */
+.choice-box .context-menu {
+    -fx-background-color: #1f1f1f;
+}
+
+.choice-box .menu-item {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.choice-box .menu-item:hover {
+    -fx-background-color: #ff4c4c;
+    -fx-text-fill: black;
+}

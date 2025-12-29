@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="app.controller.ClassementController">
+    <stylesheets>
+        <URL value="@css/style.css" />
+    </stylesheets>
+    <center><VBox spacing="20" alignment="CENTER">
+        <!-- Choix du texte -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Texte:" />
+            <ChoiceBox fx:id="texteChoiceBox" />
+        </HBox>
+
+        <!-- Filtres -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Mode de jeu:" />
+            <ChoiceBox fx:id="modeChoiceBox" />
+
+            <Label text="Difficulté:" />
+            <ChoiceBox fx:id="difficultyChoiceBox" />
+        </HBox>
+
+        <!-- Table du classement -->
+        <TableView fx:id="classementTable">
+            <columns>
+                <TableColumn fx:id="colPlace" text="Numéro" />
+                <TableColumn fx:id="colJoueur" text="Joueur" />
+                <TableColumn fx:id="colScore" text="Score" />
+            </columns>
+        </TableView>
+
+        <Button text="Voir mon meilleur score" onAction="#handleUserScore" />
+
+    </VBox>
+
+    </center>
+
+</BorderPane>
+

@@ -1,0 +1,11 @@
+#rootHomeView{
+     -fx-background-image: url("image/space.jpg");
+     -fx-background-size: cover;
+}
+#mainLayout{
+     -fx-background-image: url("image/space.jpg");
+     -fx-background-size: cover;
+}
+
+
+

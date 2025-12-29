@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.TextChoiceController"
+      fx:id="textChoiceRoot"
+      alignment="CENTER"
+      spacing="25"
+      prefHeight="600.0"
+      prefWidth="800.0"
+      styleClass="root">
+
+    <stylesheets>
+        <URL value="@css/style.css"/>
+    </stylesheets>
+
+    <padding>
+        <Insets top="30" bottom="30" left="50" right="50"/>
+    </padding>
+
+    <Label fx:id="title" text="Choisir un texte" styleClass="app-title"/>
+
+    <TableView fx:id="tableTextes" prefWidth="600" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="300"/>
+            <TableColumn fx:id="colCreateur" text="Créateur" prefWidth="300"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="btnVoirTexte" text="Voir texte" onAction="#ShowTexte" styleClass="mode-button" disable="true"/>
+        <Button fx:id="btnStart" text="Lancer" styleClass="next-button" disable="true"/>
+    </HBox>
+</VBox>
+
