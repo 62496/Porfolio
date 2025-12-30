@@ -10,7 +10,7 @@ A full-stack web application that allows users to browse a book catalog, manage 
 ### Backend — **Java Spring Boot**
 
 * Java 17
-* Spring Boot 
+* Spring Boot
 * Spring Web
 * Spring Data JPA
 * Hibernate
