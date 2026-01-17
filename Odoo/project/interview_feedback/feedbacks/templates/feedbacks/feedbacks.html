@@ -1,0 +1,67 @@
+
+{% extends "_base.html" %}
+  {% load crispy_forms_tags %}
+
+    {% block title %}
+        Mes feedbacks
+    {% endblock title %}
+
+    {% block content %}
+    {% if message %}
+        <div class="container mt-4">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Connexion Odoo requise</h4>
+                <p>{{ message }}</p>
+                <hr>
+                <p class="mb-0">Veuillez vérifier la configuration d'accès à Odoo avant de rechercher des feedbacks.</p>
+                <p class="mt-2"><a class="btn btn-primary" href="{% url 'odoo_config:config_view' %}">Aller à la configuration Odoo</a></p>
+            </div>
+        </div>
+    {% else %}
+        {% if has_candidate_profile %}
+            <form method="post" >
+                {% csrf_token %}
+                    {{form | crispy}}
+
+                <button type="submit" class="btn btn-primary">Voir mes feedbacks</button>
+            </form>
+            <p class="small text-muted">Les résultats montreront uniquement les feedbacks de la candidature liée (ID: {{ candidate_profile.odoo_applicant_id }}).</p>
+        {% else %}
+            {% if user.is_authenticated %}
+                <p class="mt-3">Vous pouvez <a href="{% url 'feedbacks:link_token' %}">lier votre compte</a> à une candidature Odoo via un token pour consulter vos feedbacks.</p>
+            {% else %}
+                <p class="mt-3">Connectez-vous pour lier votre compte à une candidature Odoo et consulter vos feedbacks.</p>
+            {% endif %}
+        {% endif %}
+
+        {% if feedbacks %}
+        <ul>
+            {% for f in feedbacks %}
+                <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+                    <p><strong>Auteur :</strong> {{ f.author_name }}</p>
+                    <p><strong>Description :</strong> {{ f.description }}</p>
+                    <p><strong>Score moyen :</strong> {{ f.average_score }}</p>
+                    <p><strong>Nombre de questions :</strong> {{ f.questions_count }}</p>
+
+                    {% if f.questions %}
+                        <h4>Questions :</h4>
+                        <ul>
+                            {% for q in f.questions %}
+                                <li>
+                                    <strong>{{ q.label }}</strong><br>
+                                    Réponse : {{ q.answer }}<br>
+                                    Score : {{ q.score }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p><em>Aucune question associée.</em></p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endif %}
+
+    {% endblock content %}
+

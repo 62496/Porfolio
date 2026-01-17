@@ -1,0 +1,20 @@
+
+{% extends "_base.html" %}
+  {% load crispy_forms_tags %}
+
+    {% block title  %}
+        Configuration Odoo
+    {% endblock title %}
+    {% block content %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit">Tester la connexion</button>
+        </form>
+
+        {% if result %}
+        <p>{{ result }}</p>
+        {% endif %}
+
+    {% endblock content %}

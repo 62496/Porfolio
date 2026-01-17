@@ -1,0 +1,101 @@
+
+Fonctionnalité  :
+    fait :
+db local , Api Web,nombre d'ecran,logique de modèle complexe,datastore
+
+
+
+
+a faire :
+    obliger :
+        commentaire + passage compliqué revoir tout le code au propre
+        Test
+        ajouter les bonne image la ou il le faut
+        les warning
+        revoir la page about
+
+
+    peut-etre :
+        choix de langue
+        Graphe (pourcentage de point dans un quizz voir meme filtrer par time)
+        Les <-:
+                bloquer les doublon et ne pas revenir en arriere en jeu
+            Il faut revoir les select :
+               doublon all ou any et impossible de repasser any ou all
+               on doit repasser par le all pour revoir tout les parametre du select disponible
+
+
+
+    aujourd'hui :
+        ajouter des quizz dans la db
+        datastore
+        - Les textes affichés dans l'UI sont définis dans le fichier String.xml;
+
+
+
+
+
+
+small bug :
+    aujourd'huit :
+        des fois en local on a direct result sans jouer
+
+    Les <-:
+        bloquer les doublon et ne pas revenir en arriere en jeu
+    Il faut revoir les select :
+       doublon all ou any et impossible de repasser any ou all
+       on doit repasser par le all pour revoir tout les parametre du select disponible
+
+
+
+
+
+ajout pas obliger  :
+    barre de recherche
+    on peut save le quizz random
+    langue :
+        traduire app et les quizz local
+    page about developper
+    connexion avec supabase
+
+
+a revoir :
+    aujourd'huit
+
+        dans les launch effect que fait on et est ce bien fait
+
+        Check les methode qui parle a la db faut il les faire en suspend pour toute ?
+
+        check opti des thread?
+
+        ajouter des remeberSavable pour le set up de la partie ?
+
+
+
+
+
+
+
+
+
+
+
+
+Indicateurs (non exhaustif) :
+- L'API LaunchedEffect est utilisée à bon escient (pas de code complexe dans les
+Composables);
+- La gestion des états est correctement implémentée (utilisation de Flow et/ou State) et
+résiste aux recréations d'Activités;
+
+- Les algorithmes et la logique de l'application sont suffisamment efficaces (pas de
+calcul inutile facilement évitable);
+
+
+
+Indicateurs (non exhaustif) :
+- Les erreurs sont bien gérées et affichées dans l'UI sous forme de messages d'erreur
+
+- Les warnings ne sont pas supprimés avec l'annotation SuppressLint;
+
+
+- Les urls, api key, etc sont définis dans un endroit unique;

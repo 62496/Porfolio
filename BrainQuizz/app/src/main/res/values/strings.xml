@@ -1,0 +1,124 @@
+<resources>
+    <string name="app_name">BrainQuiz</string>
+    <string name="login_screen">Login</string>
+    <string name="about_screen">About</string>
+    <string name="history_screen">History</string>
+    <string name="home_screen">Home</string>
+    <string name="quiz_list_screen">Quiz List</string>
+    <string name="quiz_detail_screen">Quiz Detail</string>
+    <string name="quiz_game_screen">Quiz Game</string>
+    <string name="quiz_result_screen">Results</string>
+    <string name="random_config_screen">Random Quiz</string>
+
+    <!-- Generic / Common -->
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="loading">Loading...</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="error">Error</string>
+    <string name="any">Any</string>
+    <string name="all">All</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_title">Welcome</string>
+    <string name="sign_in_subtitle">Sign in to continue</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="sign_in_button">Sign in</string>
+
+    <!-- Home Screen -->
+    <string name="app_subtitle_home">Test your knowledge</string>
+    <string name="choose_play_mode_title">Choose how you want to play</string>
+    <string name="choose_play_mode_desc">Play quizzes stored locally or start a random quiz generated from online questions.</string>
+    <string name="local_quizzes_btn">Local quizzes</string>
+    <string name="random_quiz_btn">Random quiz</string>
+    <string name="saved_game_alert">You have a saved game (Quiz #%1$d). Select it in \'Local Quizzes\' to resume.</string>
+
+    <!-- About Screen -->
+    <string name="about_title">About</string>
+    <string name="about_subtitle">Your local stats</string>
+
+    <string name="about_total_played">Quizzes played</string>
+    <string name="about_avg_score">Average score</string>
+    <string name="about_best_score">Best score</string>
+
+    <string name="about_favorites">Favorites</string>
+    <string name="about_last_score">Last score</string>
+    <string name="about_last_played">Last played</string>
+
+    <string name="about_version">Version</string>
+
+    <!-- History Screen -->
+    <string name="history_title">History</string>
+    <string name="history_subtitle">Your played quizzes</string>
+    <string name="category_label">Category</string>
+    <string name="date_label">Date</string>
+    <string name="last_20_sec">20sec</string>
+    <string name="today">Today</string>
+    <string name="last_7_days">Last 7 days</string>
+    <string name="last_30_days">Last 30 days</string>
+    <string name="no_history">No history yet</string>
+
+    <!-- Quiz List Screen -->
+    <string name="quizzes_title">Quizzes</string>
+    <string name="choose_quiz_subtitle">Choose a quiz to start</string>
+    <string name="quizzes_subtitle">Choose a quiz to start</string>
+    <string name="difficulty_label">Difficulty</string>
+    <string name="filter_difficulty">Difficulty</string>
+    <string name="only_favorites_label">Only favorites</string>
+    <string name="filter_favorites">Favorites</string>
+    <string name="no_quizzes_available">No quizzes available</string>
+    <string name="no_quizzes">No quizzes available</string>
+    <string name="overwrite_save_title">Overwrite Save?</string>
+    <string name="overwrite_save_message">You have a saved game in progress for another quiz. Starting this new quiz will overwrite your progress.</string>
+    <string name="overwrite_start_btn">Overwrite &amp; Start</string>
+    <string name="overwrite_and_start">Overwrite &amp; Start</string>
+    <string name="filter_category">Category</string>
+    <string name="favorite_icon">Favorite</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+
+    <!-- Quiz Detail Screen -->
+    <string name="start_quiz_btn">Start quiz</string>
+    <string name="questions_count_format">%1$d questions</string>
+
+    <!-- Random Config Screen -->
+    <string name="random_quiz_title">Random Quiz</string>
+    <string name="choose_pref_subtitle">Choose your preferences</string>
+    <string name="start_random_quiz_btn">Start random quiz</string>
+    <string name="random_error_no_questions">No questions available.</string>
+    <string name="random_error_no_questions_for_filters">No questions found for these filters. Try different options.</string>
+    <string name="random_error_invalid_request">Invalid request. Please change your filters.</string>
+    <string name="random_error_session_expired">Session expired. Please try again.</string>
+    <string name="random_error_rate_limited">Too many requests. Please wait a few seconds and try again.</string>
+    <string name="random_error_unexpected">Unexpected error while loading questions.</string>
+    <string name="random_error_connection">Unable to load questions. Check your internet connection.</string>
+
+    <!-- Quiz Game Screen -->
+    <string name="question_progress_format">Question %1$d / %2$d</string>
+    <string name="time_left_format">⏱ %1$d s</string>
+    <string name="load_error_title">Oops! Unable to load the game.</string>
+    <string name="back_to_menu_btn">Back to menu</string>
+
+    <!-- Game Dialogs -->
+    <string name="pause_title">Game Paused</string>
+    <string name="local_save_message">You are in Local Mode. You can save your progress to resume later.</string>
+    <string name="save_quit_btn">Save &amp; Quit</string>
+    <string name="quit_no_save_btn">Quit (No Save)</string>
+
+    <string name="quit_game_title">Quit Game?</string>
+    <string name="random_quit_message">Random games cannot be saved. Progress will be lost.</string>
+    <string name="quit_btn">Quit</string>
+
+    <!-- Quiz Result Screen -->
+    <string name="quiz_finished_title">Quiz finished</string>
+    <string name="your_score_label">Your score</string>
+    <string name="perfect_score_msg">Perfect score!</string>
+    <string name="great_job_msg">Great job!</string>
+    <string name="good_effort_msg">Good effort!</string>
+    <string name="try_again_msg">Try again!</string>
+    <string name="score_format">%1$d / %2$d</string>
+
+</resources>

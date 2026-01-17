@@ -1,0 +1,9 @@
+{% extends "_base.html" %}
+
+    {% block content %}
+    <div class="container mt-5">
+        <h2>Déconnexion réussie</h2>
+        <p>Vous êtes maintenant déconnecté.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary mt-3">Se reconnecter</a>
+    </div>
+{% endblock %}

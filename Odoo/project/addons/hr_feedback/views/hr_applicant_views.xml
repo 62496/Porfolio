@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="hr_applicant_form_inherit_feedback" model="ir.ui.view">
+        <field name="name">hr.applicant.form.inherit.feedback</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- On ajoute un smart button dans la zone des boutons -->
+            <xpath expr="//div[contains(@class,'oe_button_box')]" position="inside">
+                <button
+                    type="action"
+                    name="%(hr_feedback.action_hr_feedback_from_applicant)d"
+                    class="oe_stat_button"
+                    icon="fa-comment">
+                    <field name="feedback_count" widget="statinfo" string="Feedbacks"/>
+                </button>
+            </xpath>
+
+            <!-- Access token and regen button -->
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="access_token" readonly="1"/>
+                    <button name="regenerate_access_token" string="Regenerate Token" type="object" class="btn-secondary"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

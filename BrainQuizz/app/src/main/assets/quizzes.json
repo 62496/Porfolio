@@ -1,0 +1,605 @@
+[
+  {
+    "title": "World Capitals",
+    "category": "Geography",
+    "difficulty": "easy",
+    "questions": [
+      { "text": "What is the capital of France?", "answers": ["Paris", "Lyon", "Marseille", "Nice"], "correct": "Paris" },
+      { "text": "What is the capital of Germany?", "answers": ["Berlin", "Munich", "Hamburg", "Frankfurt"], "correct": "Berlin" },
+      { "text": "What is the capital of Spain?", "answers": ["Madrid", "Barcelona", "Valencia", "Seville"], "correct": "Madrid" },
+      { "text": "What is the capital of Italy?", "answers": ["Rome", "Milan", "Venice", "Naples"], "correct": "Rome" },
+      { "text": "What is the capital of Canada?", "answers": ["Ottawa", "Toronto", "Vancouver", "Montreal"], "correct": "Ottawa" },
+      { "text": "What is the capital of Australia?", "answers": ["Canberra", "Sydney", "Melbourne", "Brisbane"], "correct": "Canberra" },
+      { "text": "What is the capital of Japan?", "answers": ["Tokyo", "Osaka", "Kyoto", "Nagoya"], "correct": "Tokyo" },
+      { "text": "What is the capital of Brazil?", "answers": ["Brasilia", "Rio de Janeiro", "Sao Paulo", "Salvador"], "correct": "Brasilia" },
+      { "text": "What is the capital of Norway?", "answers": ["Oslo", "Stockholm", "Helsinki", "Copenhagen"], "correct": "Oslo" },
+      { "text": "What is the capital of Egypt?", "answers": ["Cairo", "Alexandria", "Giza", "Luxor"], "correct": "Cairo" }
+    ]
+  },
+  {
+    "title": "European Geography",
+    "category": "Geography",
+    "difficulty": "medium",
+    "questions": [
+      { "text": "Which river flows through Paris?", "answers": ["Seine", "Rhine", "Danube", "Loire"], "correct": "Seine" },
+      { "text": "Which country borders Portugal?", "answers": ["Spain", "France", "Italy", "Belgium"], "correct": "Spain" },
+      { "text": "What is the largest country in Europe?", "answers": ["Russia", "France", "Germany", "Ukraine"], "correct": "Russia" },
+      { "text": "Which sea separates Europe and Africa?", "answers": ["Mediterranean", "Baltic", "North Sea", "Black Sea"], "correct": "Mediterranean" },
+      { "text": "Which mountain range separates France and Spain?", "answers": ["Pyrenees", "Alps", "Carpathians", "Apennines"], "correct": "Pyrenees" },
+      { "text": "What is the capital of Finland?", "answers": ["Helsinki", "Oslo", "Tallinn", "Riga"], "correct": "Helsinki" },
+      { "text": "What is the capital of Greece?", "answers": ["Athens", "Sparta", "Thessaloniki", "Patras"], "correct": "Athens" },
+      { "text": "Which country uses the krona?", "answers": ["Sweden", "Spain", "Italy", "Austria"], "correct": "Sweden" },
+      { "text": "Which city is known as the City of Canals?", "answers": ["Venice", "Amsterdam", "Bruges", "Stockholm"], "correct": "Venice" },
+      { "text": "Which country is not in the EU?", "answers": ["Norway", "Germany", "Italy", "Spain"], "correct": "Norway" }
+    ]
+  },
+  {
+    "title": "Basic Science",
+    "category": "Science",
+    "difficulty": "easy",
+    "questions": [
+      { "text": "What planet is known as the Red Planet?", "answers": ["Mars", "Venus", "Jupiter", "Mercury"], "correct": "Mars" },
+      { "text": "What gas do humans need to breathe?", "answers": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], "correct": "Oxygen" },
+      { "text": "How many legs does a spider have?", "answers": ["8", "6", "10", "12"], "correct": "8" },
+      { "text": "What is H2O?", "answers": ["Water", "Oxygen", "Hydrogen", "Salt"], "correct": "Water" },
+      { "text": "What force keeps us on the ground?", "answers": ["Gravity", "Magnetism", "Energy", "Friction"], "correct": "Gravity" },
+      { "text": "Which organ pumps blood?", "answers": ["Heart", "Lung", "Brain", "Liver"], "correct": "Heart" },
+      { "text": "What do plants need for photosynthesis?", "answers": ["Sunlight", "Oxygen", "Nitrogen", "Sugar"], "correct": "Sunlight" },
+      { "text": "What part of the body lets you see?", "answers": ["Eyes", "Ears", "Nose", "Skin"], "correct": "Eyes" },
+      { "text": "Which animal is a mammal?", "answers": ["Dolphin", "Shark", "Lizard", "Frog"], "correct": "Dolphin" },
+      { "text": "What is the center of our solar system?", "answers": ["Sun", "Earth", "Moon", "Mars"], "correct": "Sun" }
+    ]
+  },
+  {
+    "title": "Space Science",
+    "category": "Science",
+    "difficulty": "medium",
+    "questions": [
+      { "text": "Which planet is the largest?", "answers": ["Jupiter", "Saturn", "Earth", "Neptune"], "correct": "Jupiter" },
+      { "text": "Which planet has rings?", "answers": ["Saturn", "Mars", "Venus", "Mercury"], "correct": "Saturn" },
+      { "text": "What galaxy do we live in?", "answers": ["Milky Way", "Andromeda", "Whirlpool", "Sombrero"], "correct": "Milky Way" },
+      { "text": "What is the closest star to Earth?", "answers": ["Sun", "Proxima Centauri", "Sirius", "Polaris"], "correct": "Sun" },
+      { "text": "How many planets are in the solar system?", "answers": ["8", "7", "9", "10"], "correct": "8" },
+      { "text": "What causes tides?", "answers": ["Moon", "Sun", "Wind", "Earth"], "correct": "Moon" },
+      { "text": "What protects Earth from meteors?", "answers": ["Atmosphere", "Magnetic Field", "Ozone", "Clouds"], "correct": "Atmosphere" },
+      { "text": "Which planet is closest to the Sun?", "answers": ["Mercury", "Venus", "Earth", "Mars"], "correct": "Mercury" },
+      { "text": "What is a comet made of?", "answers": ["Ice and dust", "Rock", "Gas only", "Metal"], "correct": "Ice and dust" },
+      { "text": "Which planet is known for storms?", "answers": ["Jupiter", "Earth", "Mars", "Venus"], "correct": "Jupiter" }
+    ]
+  },
+  {
+    "title": "Computer Basics",
+    "category": "Technology",
+    "difficulty": "easy",
+    "questions": [
+      { "text": "What does CPU stand for?", "answers": ["Central Processing Unit", "Computer Power Unit", "Core Process Unit", "Central Program Unit"], "correct": "Central Processing Unit" },
+      { "text": "What device is used to click?", "answers": ["Mouse", "Keyboard", "Screen", "Printer"], "correct": "Mouse" },
+      { "text": "What does RAM stand for?", "answers": ["Random Access Memory", "Read Access Memory", "Run Access Memory", "Rapid Memory"], "correct": "Random Access Memory" },
+      { "text": "Which company created Android?", "answers": ["Google", "Apple", "Microsoft", "Samsung"], "correct": "Google" },
+      { "text": "What does USB stand for?", "answers": ["Universal Serial Bus", "Unified System Board", "User Service Button", "Ultra Speed Bus"], "correct": "Universal Serial Bus" },
+      { "text": "Which device displays images?", "answers": ["Monitor", "Keyboard", "Mouse", "Speaker"], "correct": "Monitor" },
+      { "text": "Which one is an operating system?", "answers": ["Windows", "Google", "Chrome", "Intel"], "correct": "Windows" },
+      { "text": "What is used to type?", "answers": ["Keyboard", "Mouse", "Screen", "Camera"], "correct": "Keyboard" },
+      { "text": "What stores data permanently?", "answers": ["Hard Drive", "RAM", "CPU", "Cache"], "correct": "Hard Drive" },
+      { "text": "Which is portable?", "answers": ["Laptop", "Desktop", "Server", "Mainframe"], "correct": "Laptop" }
+    ]
+  }
+  ,
+{
+  "title": "Programming Fundamentals",
+  "category": "Technology",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "Which keyword is used to define a function in Kotlin?", "answers": ["fun", "def", "function", "fn"], "correct": "fun" },
+    { "text": "Which data type is used for true/false values?", "answers": ["Boolean", "String", "Int", "Float"], "correct": "Boolean" },
+    { "text": "What does IDE stand for?", "answers": ["Integrated Development Environment", "Internet Development Engine", "Integrated Debugging Extension", "Internal Design Editor"], "correct": "Integrated Development Environment" },
+    { "text": "Which symbol is used to start a single-line comment in Java/Kotlin?", "answers": ["//", "#", "--", "/*"], "correct": "//" },
+    { "text": "Which collection allows duplicate values and preserves order?", "answers": ["List", "Set", "Map", "Tree"], "correct": "List" },
+    { "text": "What is the result of 5 / 2 using integer division?", "answers": ["2", "2.5", "3", "1"], "correct": "2" },
+    { "text": "Which operator checks equality in Kotlin?", "answers": ["==", "=", "===", "!="], "correct": "==" },
+    { "text": "Which term describes repeating a set of instructions?", "answers": ["Loop", "Class", "Import", "Compile"], "correct": "Loop" },
+    { "text": "Which statement is commonly used for branching logic?", "answers": ["if", "print", "return", "break"], "correct": "if" },
+    { "text": "What is a variable that cannot be reassigned in Kotlin?", "answers": ["val", "var", "let", "mut"], "correct": "val" }
+  ]
+},
+{
+  "title": "Web Fundamentals",
+  "category": "Technology",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "What does HTML stand for?", "answers": ["HyperText Markup Language", "HighText Machine Language", "HyperTransfer Markup Language", "Home Tool Markup Language"], "correct": "HyperText Markup Language" },
+    { "text": "Which language is primarily used for web page styling?", "answers": ["CSS", "HTML", "SQL", "Kotlin"], "correct": "CSS" },
+    { "text": "What does HTTP stand for?", "answers": ["HyperText Transfer Protocol", "High Transfer Text Protocol", "Hyperlink Transmission Program", "Home Transfer Protocol"], "correct": "HyperText Transfer Protocol" },
+    { "text": "Which tag creates a hyperlink in HTML?", "answers": ["<a>", "<link>", "<href>", "<p>"], "correct": "<a>" },
+    { "text": "Which HTTP method is typically used to retrieve data?", "answers": ["GET", "POST", "PUT", "DELETE"], "correct": "GET" },
+    { "text": "What does URL stand for?", "answers": ["Uniform Resource Locator", "Universal Reference Link", "Unified Route List", "User Resource Location"], "correct": "Uniform Resource Locator" },
+    { "text": "Which protocol is used for secure web browsing?", "answers": ["HTTPS", "FTP", "HTTP", "SMTP"], "correct": "HTTPS" },
+    { "text": "Which tag is used to create a top-level heading?", "answers": ["<h1>", "<head>", "<title>", "<p>"], "correct": "<h1>" },
+    { "text": "What is the purpose of a browser cache?", "answers": ["Speed up loading", "Encrypt websites", "Block ads", "Increase screen brightness"], "correct": "Speed up loading" },
+    { "text": "Which file often describes dependencies in JavaScript projects?", "answers": ["package.json", "index.html", "main.css", "README.md"], "correct": "package.json" }
+  ]
+},
+{
+  "title": "Ancient Civilizations",
+  "category": "History",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "Which civilization built the pyramids at Giza?", "answers": ["Egyptians", "Romans", "Greeks", "Vikings"], "correct": "Egyptians" },
+    { "text": "Which city was buried by the eruption of Mount Vesuvius in 79 CE?", "answers": ["Pompeii", "Athens", "Carthage", "Sparta"], "correct": "Pompeii" },
+    { "text": "Who was the famous Macedonian conqueror of Persia?", "answers": ["Alexander the Great", "Julius Caesar", "Hannibal", "Cyrus the Great"], "correct": "Alexander the Great" },
+    { "text": "Which river was central to Mesopotamian civilization?", "answers": ["Tigris and Euphrates", "Nile", "Indus", "Yellow River"], "correct": "Tigris and Euphrates" },
+    { "text": "Which ancient empire built a vast road network including the Appian Way?", "answers": ["Roman Empire", "Aztec Empire", "Mongol Empire", "Ottoman Empire"], "correct": "Roman Empire" },
+    { "text": "What writing system is associated with ancient Egypt?", "answers": ["Hieroglyphs", "Cuneiform", "Runes", "Alphabet"], "correct": "Hieroglyphs" },
+    { "text": "Which civilization is known for the city of Machu Picchu?", "answers": ["Inca", "Maya", "Olmec", "Greek"], "correct": "Inca" },
+    { "text": "The Parthenon is located in which city?", "answers": ["Athens", "Rome", "Istanbul", "Alexandria"], "correct": "Athens" },
+    { "text": "Which ancient people are associated with the city of Carthage?", "answers": ["Phoenicians", "Japanese", "Vikings", "Persians"], "correct": "Phoenicians" },
+    { "text": "What was the main language of the Roman Empire in the West?", "answers": ["Latin", "Greek", "Arabic", "Hebrew"], "correct": "Latin" }
+  ]
+},
+{
+  "title": "Modern History",
+  "category": "History",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "In which year did World War I begin?", "answers": ["1914", "1918", "1939", "1905"], "correct": "1914" },
+    { "text": "In which year did World War II end?", "answers": ["1945", "1941", "1939", "1955"], "correct": "1945" },
+    { "text": "Which event is associated with 1989 in Germany?", "answers": ["Fall of the Berlin Wall", "Start of WWI", "Cuban Missile Crisis", "Moon landing"], "correct": "Fall of the Berlin Wall" },
+    { "text": "Which organization was founded in 1945 to promote international cooperation?", "answers": ["United Nations", "NATO", "EU", "League of Empires"], "correct": "United Nations" },
+    { "text": "Who was the first person to walk on the Moon?", "answers": ["Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "Michael Collins"], "correct": "Neil Armstrong" },
+    { "text": "Which country was the main rival of the USA during the Cold War?", "answers": ["Soviet Union", "China", "Japan", "Germany"], "correct": "Soviet Union" },
+    { "text": "What was the name of the ship that carried the Pilgrims to America in 1620?", "answers": ["Mayflower", "Santa Maria", "Endeavour", "Beagle"], "correct": "Mayflower" },
+    { "text": "Which revolution began in 1789?", "answers": ["French Revolution", "Russian Revolution", "Industrial Revolution", "American Civil War"], "correct": "French Revolution" },
+    { "text": "Which conflict was fought between North and South Vietnam?", "answers": ["Vietnam War", "Korean War", "Gulf War", "Crimean War"], "correct": "Vietnam War" },
+    { "text": "Which country left the European Union in 2020?", "answers": ["United Kingdom", "Norway", "Switzerland", "Iceland"], "correct": "United Kingdom" }
+  ]
+},
+{
+  "title": "Movie Classics",
+  "category": "Entertainment",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Who directed 'Titanic'?", "answers": ["James Cameron", "Steven Spielberg", "Christopher Nolan", "Ridley Scott"], "correct": "James Cameron" },
+    { "text": "Which movie features a character named Darth Vader?", "answers": ["Star Wars", "Star Trek", "Avatar", "Inception"], "correct": "Star Wars" },
+    { "text": "Which film features dinosaurs on an island theme park?", "answers": ["Jurassic Park", "Jaws", "Alien", "Gladiator"], "correct": "Jurassic Park" },
+    { "text": "Who played Jack Sparrow?", "answers": ["Johnny Depp", "Brad Pitt", "Tom Hanks", "Matt Damon"], "correct": "Johnny Depp" },
+    { "text": "Which animated movie features a lion named Simba?", "answers": ["The Lion King", "Shrek", "Toy Story", "Finding Nemo"], "correct": "The Lion King" },
+    { "text": "Which movie is about a ship called the Black Pearl?", "answers": ["Pirates of the Caribbean", "Titanic", "The Perfect Storm", "Cast Away"], "correct": "Pirates of the Caribbean" },
+    { "text": "Which movie features a character named Harry Potter?", "answers": ["Harry Potter", "Lord of the Rings", "Star Wars", "Matrix"], "correct": "Harry Potter" },
+    { "text": "Which movie features a green ogre named Shrek?", "answers": ["Shrek", "Frozen", "Moana", "Coco"], "correct": "Shrek" },
+    { "text": "Which movie features toys that come to life?", "answers": ["Toy Story", "Cars", "Up", "Ratatouille"], "correct": "Toy Story" },
+    { "text": "Which movie features a character named Neo?", "answers": ["The Matrix", "Inception", "Interstellar", "Avatar"], "correct": "The Matrix" }
+  ]
+},
+{
+  "title": "Music Basics",
+  "category": "Entertainment",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Which instrument has 88 keys?", "answers": ["Piano", "Guitar", "Violin", "Drums"], "correct": "Piano" },
+    { "text": "Who is often called the King of Pop?", "answers": ["Michael Jackson", "Elvis Presley", "Prince", "Freddie Mercury"], "correct": "Michael Jackson" },
+    { "text": "Which band is known for 'Bohemian Rhapsody'?", "answers": ["Queen", "The Beatles", "U2", "Nirvana"], "correct": "Queen" },
+    { "text": "Which instrument is typically played with a bow?", "answers": ["Violin", "Piano", "Drums", "Trumpet"], "correct": "Violin" },
+    { "text": "What is the standard number of strings on a guitar?", "answers": ["6", "4", "5", "7"], "correct": "6" },
+    { "text": "Which musical term means 'loud'?", "answers": ["Forte", "Piano", "Adagio", "Allegro"], "correct": "Forte" },
+    { "text": "Which clef is used for most higher-pitched instruments?", "answers": ["Treble clef", "Bass clef", "Alto clef", "Tenor clef"], "correct": "Treble clef" },
+    { "text": "Which family does the trumpet belong to?", "answers": ["Brass", "Strings", "Woodwind", "Percussion"], "correct": "Brass" },
+    { "text": "What do you call a group of musicians playing together?", "answers": ["Band", "Canvas", "Folder", "Chapter"], "correct": "Band" },
+    { "text": "Which note is the first in the musical alphabet?", "answers": ["A", "B", "C", "D"], "correct": "A" }
+  ]
+},
+{
+  "title": "Sports Basics",
+  "category": "Sports",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "How many players are on a soccer team on the field?", "answers": ["11", "10", "9", "12"], "correct": "11" },
+    { "text": "Which sport uses a racket and a shuttlecock?", "answers": ["Badminton", "Tennis", "Squash", "Table Tennis"], "correct": "Badminton" },
+    { "text": "Which sport is played on ice with a puck?", "answers": ["Ice hockey", "Basketball", "Baseball", "Rugby"], "correct": "Ice hockey" },
+    { "text": "In basketball, how many points is a free throw worth?", "answers": ["1", "2", "3", "4"], "correct": "1" },
+    { "text": "Which sport includes the term 'home run'?", "answers": ["Baseball", "Soccer", "Tennis", "Hockey"], "correct": "Baseball" },
+    { "text": "What is the main object kicked in soccer?", "answers": ["Ball", "Puck", "Bat", "Disc"], "correct": "Ball" },
+    { "text": "Which sport is associated with Wimbledon?", "answers": ["Tennis", "Golf", "Cricket", "Boxing"], "correct": "Tennis" },
+    { "text": "Which sport uses clubs to hit a small ball into holes?", "answers": ["Golf", "Hockey", "Rugby", "Volleyball"], "correct": "Golf" },
+    { "text": "Which sport has rounds and a referee in a ring?", "answers": ["Boxing", "Swimming", "Cycling", "Skiing"], "correct": "Boxing" },
+    { "text": "What color is a standard tennis ball?", "answers": ["Yellow", "Red", "Blue", "Black"], "correct": "Yellow" }
+  ]
+},
+{
+  "title": "General Knowledge",
+  "category": "General",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What is the largest ocean on Earth?", "answers": ["Pacific", "Atlantic", "Indian", "Arctic"], "correct": "Pacific" },
+    { "text": "Which metal is liquid at room temperature?", "answers": ["Mercury", "Iron", "Aluminum", "Gold"], "correct": "Mercury" },
+    { "text": "How many continents are there?", "answers": ["7", "5", "6", "8"], "correct": "7" },
+    { "text": "Which language has the most native speakers worldwide?", "answers": ["Mandarin Chinese", "English", "Spanish", "Hindi"], "correct": "Mandarin Chinese" },
+    { "text": "Which country is famous for the Great Wall?", "answers": ["China", "Japan", "India", "Russia"], "correct": "China" },
+    { "text": "What is the boiling point of water at sea level (°C)?", "answers": ["100", "90", "80", "110"], "correct": "100" },
+    { "text": "Which vitamin is produced when skin is exposed to sunlight?", "answers": ["Vitamin D", "Vitamin C", "Vitamin A", "Vitamin B12"], "correct": "Vitamin D" },
+    { "text": "What is the smallest prime number?", "answers": ["2", "1", "3", "5"], "correct": "2" },
+    { "text": "Which planet is closest to the Sun?", "answers": ["Mercury", "Venus", "Earth", "Mars"], "correct": "Mercury" },
+    { "text": "Which organ is responsible for filtering blood in the human body?", "answers": ["Kidneys", "Lungs", "Stomach", "Heart"], "correct": "Kidneys" }
+  ]
+},
+{
+  "title": "Literature and Language",
+  "category": "General",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "Who wrote 'Romeo and Juliet'?", "answers": ["William Shakespeare", "Charles Dickens", "Mark Twain", "Jane Austen"], "correct": "William Shakespeare" },
+    { "text": "What is the plural of 'mouse'?", "answers": ["mice", "mouses", "mouse", "meese"], "correct": "mice" },
+    { "text": "Which novel begins with 'Call me Ishmael'?", "answers": ["Moby-Dick", "1984", "The Great Gatsby", "Dracula"], "correct": "Moby-Dick" },
+    { "text": "Who wrote '1984'?", "answers": ["George Orwell", "Aldous Huxley", "J.R.R. Tolkien", "Ernest Hemingway"], "correct": "George Orwell" },
+    { "text": "What is a synonym for 'rapid'?", "answers": ["fast", "slow", "late", "quiet"], "correct": "fast" },
+    { "text": "Which punctuation mark ends a question?", "answers": ["?", "!", ".", ","], "correct": "?" },
+    { "text": "Who wrote 'Pride and Prejudice'?", "answers": ["Jane Austen", "Emily Bronte", "Virginia Woolf", "Mary Shelley"], "correct": "Jane Austen" },
+    { "text": "What is the adjective form of 'beauty'?", "answers": ["beautiful", "beautify", "beautyful", "beauteousness"], "correct": "beautiful" },
+    { "text": "Which word is an antonym of 'ancient'?", "answers": ["modern", "old", "historic", "classic"], "correct": "modern" },
+    { "text": "Which term describes the main character of a story?", "answers": ["protagonist", "antagonist", "editor", "narrator"], "correct": "protagonist" }
+  ]
+}
+,
+{
+  "title": "Advanced Geography",
+  "category": "Geography",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "Which country has the longest coastline?", "answers": ["Canada", "Russia", "Australia", "Indonesia"], "correct": "Canada" },
+    { "text": "What is the capital of New Zealand?", "answers": ["Wellington", "Auckland", "Christchurch", "Dunedin"], "correct": "Wellington" },
+    { "text": "Which desert is the largest hot desert in the world?", "answers": ["Sahara", "Gobi", "Kalahari", "Arabian"], "correct": "Sahara" },
+    { "text": "Which mountain is the highest above sea level?", "answers": ["Mount Everest", "K2", "Kangchenjunga", "Lhotse"], "correct": "Mount Everest" },
+    { "text": "Which country is both in Europe and Asia?", "answers": ["Turkey", "Greece", "Italy", "Spain"], "correct": "Turkey" },
+    { "text": "What is the capital of Iceland?", "answers": ["Reykjavik", "Oslo", "Helsinki", "Copenhagen"], "correct": "Reykjavik" },
+    { "text": "Which river is the longest in the world?", "answers": ["Nile", "Amazon", "Yangtze", "Mississippi"], "correct": "Nile" },
+    { "text": "Which country has the most islands?", "answers": ["Sweden", "Indonesia", "Norway", "Finland"], "correct": "Sweden" },
+    { "text": "Which ocean is the deepest?", "answers": ["Pacific", "Atlantic", "Indian", "Arctic"], "correct": "Pacific" },
+    { "text": "What is the capital of Peru?", "answers": ["Lima", "Cusco", "Arequipa", "Trujillo"], "correct": "Lima" }
+  ]
+},
+{
+  "title": "Human Biology",
+  "category": "Science",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "How many bones are in the adult human body?", "answers": ["206", "201", "210", "215"], "correct": "206" },
+    { "text": "Which organ is responsible for breathing?", "answers": ["Lungs", "Heart", "Kidneys", "Liver"], "correct": "Lungs" },
+    { "text": "What is the largest organ in the human body?", "answers": ["Skin", "Liver", "Brain", "Heart"], "correct": "Skin" },
+    { "text": "Which blood cells help fight infection?", "answers": ["White blood cells", "Red blood cells", "Platelets", "Plasma"], "correct": "White blood cells" },
+    { "text": "What part of the eye controls light entry?", "answers": ["Pupil", "Retina", "Lens", "Cornea"], "correct": "Pupil" },
+    { "text": "Which vitamin is important for vision?", "answers": ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"], "correct": "Vitamin A" },
+    { "text": "What is the normal human body temperature (°C)?", "answers": ["37", "36", "38", "39"], "correct": "37" },
+    { "text": "Which system controls hormones?", "answers": ["Endocrine", "Digestive", "Respiratory", "Circulatory"], "correct": "Endocrine" },
+    { "text": "What carries oxygen in the blood?", "answers": ["Hemoglobin", "Plasma", "Platelets", "Glucose"], "correct": "Hemoglobin" },
+    { "text": "Which organ filters waste from blood?", "answers": ["Kidneys", "Lungs", "Stomach", "Pancreas"], "correct": "Kidneys" }
+  ]
+},
+{
+  "title": "Chemistry Basics",
+  "category": "Science",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "What is the chemical symbol for water?", "answers": ["H2O", "O2", "CO2", "HO"], "correct": "H2O" },
+    { "text": "What gas do plants release during photosynthesis?", "answers": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], "correct": "Oxygen" },
+    { "text": "What is the pH of pure water?", "answers": ["7", "5", "9", "1"], "correct": "7" },
+    { "text": "Which element has the symbol Na?", "answers": ["Sodium", "Nitrogen", "Neon", "Nickel"], "correct": "Sodium" },
+    { "text": "What state of matter is air?", "answers": ["Gas", "Liquid", "Solid", "Plasma"], "correct": "Gas" },
+    { "text": "Which metal is attracted to magnets?", "answers": ["Iron", "Gold", "Silver", "Aluminum"], "correct": "Iron" },
+    { "text": "What is CO2 commonly called?", "answers": ["Carbon dioxide", "Carbon monoxide", "Oxygen", "Methane"], "correct": "Carbon dioxide" },
+    { "text": "What is the chemical symbol for gold?", "answers": ["Au", "Ag", "Gd", "Go"], "correct": "Au" },
+    { "text": "Which substance has a fixed shape and volume?", "answers": ["Solid", "Liquid", "Gas", "Plasma"], "correct": "Solid" },
+    { "text": "What do acids taste like?", "answers": ["Sour", "Sweet", "Bitter", "Salty"], "correct": "Sour" }
+  ]
+},
+{
+  "title": "World Economy",
+  "category": "General",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What currency is used in Japan?", "answers": ["Yen", "Won", "Dollar", "Euro"], "correct": "Yen" },
+    { "text": "What does GDP stand for?", "answers": ["Gross Domestic Product", "Global Development Plan", "General Domestic Profit", "Gross Demand Price"], "correct": "Gross Domestic Product" },
+    { "text": "Which country has the largest economy?", "answers": ["United States", "China", "Japan", "Germany"], "correct": "United States" },
+    { "text": "What is inflation?", "answers": ["Rise in prices", "Fall in prices", "Economic growth", "Tax increase"], "correct": "Rise in prices" },
+    { "text": "Which organization manages the euro?", "answers": ["European Central Bank", "World Bank", "IMF", "UN"], "correct": "European Central Bank" },
+    { "text": "What is a budget deficit?", "answers": ["Spending exceeds income", "Income exceeds spending", "No debt", "Balanced budget"], "correct": "Spending exceeds income" },
+    { "text": "Which market involves buying and selling shares?", "answers": ["Stock market", "Labor market", "Black market", "Retail market"], "correct": "Stock market" },
+    { "text": "Which tax is added to most goods and services?", "answers": ["VAT", "Income tax", "Customs tax", "Luxury tax"], "correct": "VAT" },
+    { "text": "What does IMF stand for?", "answers": ["International Monetary Fund", "International Market Forum", "Internal Money Flow", "Investment Management Firm"], "correct": "International Monetary Fund" },
+    { "text": "Which country is known for Silicon Valley?", "answers": ["United States", "Japan", "Germany", "India"], "correct": "United States" }
+  ]
+},
+{
+  "title": "Art and Culture",
+  "category": "General",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Who painted the Mona Lisa?", "answers": ["Leonardo da Vinci", "Michelangelo", "Raphael", "Donatello"], "correct": "Leonardo da Vinci" },
+    { "text": "Which city is famous for the Eiffel Tower?", "answers": ["Paris", "Rome", "London", "Berlin"], "correct": "Paris" },
+    { "text": "Which art movement is Salvador Dalí associated with?", "answers": ["Surrealism", "Cubism", "Impressionism", "Realism"], "correct": "Surrealism" },
+    { "text": "Which instrument is used in classical orchestras?", "answers": ["Violin", "Electric guitar", "Drum kit", "Synthesizer"], "correct": "Violin" },
+    { "text": "What is a museum?", "answers": ["Place for art and history", "Sports arena", "Library", "School"], "correct": "Place for art and history" },
+    { "text": "Which dance originated in Argentina?", "answers": ["Tango", "Salsa", "Waltz", "Hip-hop"], "correct": "Tango" },
+    { "text": "Which art form uses clay?", "answers": ["Sculpture", "Painting", "Photography", "Music"], "correct": "Sculpture" },
+    { "text": "Which festival is celebrated with costumes and parades?", "answers": ["Carnival", "Thanksgiving", "Easter", "Halloween"], "correct": "Carnival" },
+    { "text": "Which building is an opera house in Sydney?", "answers": ["Sydney Opera House", "Big Ben", "Colosseum", "Statue of Liberty"], "correct": "Sydney Opera House" },
+    { "text": "Which color is made by mixing red and blue?", "answers": ["Purple", "Green", "Orange", "Brown"], "correct": "Purple" }
+  ]
+}
+
+,
+{
+  "title": "Advanced Technology",
+  "category": "Technology",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "What does API stand for?", "answers": ["Application Programming Interface", "Advanced Program Interaction", "Applied Protocol Interface", "Application Process Index"], "correct": "Application Programming Interface" },
+    { "text": "Which data structure uses key–value pairs?", "answers": ["Map", "List", "Array", "Set"], "correct": "Map" },
+    { "text": "What is the main purpose of Git?", "answers": ["Version control", "Code compilation", "UI design", "Database storage"], "correct": "Version control" },
+    { "text": "Which command creates a new Git repository?", "answers": ["git init", "git start", "git clone", "git new"], "correct": "git init" },
+    { "text": "Which programming paradigm focuses on objects?", "answers": ["Object-oriented", "Functional", "Procedural", "Declarative"], "correct": "Object-oriented" },
+    { "text": "What does SQL stand for?", "answers": ["Structured Query Language", "Simple Query Logic", "Sequential Query Language", "Structured Question List"], "correct": "Structured Query Language" },
+    { "text": "Which HTTP status code means 'Not Found'?", "answers": ["404", "200", "500", "301"], "correct": "404" },
+    { "text": "Which layer of the OSI model handles routing?", "answers": ["Network", "Transport", "Session", "Application"], "correct": "Network" },
+    { "text": "What does JVM stand for?", "answers": ["Java Virtual Machine", "Java Variable Method", "Joint Virtual Memory", "Java Visual Module"], "correct": "Java Virtual Machine" },
+    { "text": "Which language runs in a web browser?", "answers": ["JavaScript", "Java", "Kotlin", "C++"], "correct": "JavaScript" }
+  ]
+},
+{
+  "title": "Environmental Science",
+  "category": "Science",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What gas contributes most to global warming?", "answers": ["Carbon dioxide", "Oxygen", "Nitrogen", "Helium"], "correct": "Carbon dioxide" },
+    { "text": "What renewable energy comes from the sun?", "answers": ["Solar", "Wind", "Hydro", "Geothermal"], "correct": "Solar" },
+    { "text": "What is deforestation?", "answers": ["Cutting down forests", "Planting trees", "Soil irrigation", "Urban farming"], "correct": "Cutting down forests" },
+    { "text": "Which layer protects Earth from UV radiation?", "answers": ["Ozone layer", "Troposphere", "Ionosphere", "Core"], "correct": "Ozone layer" },
+    { "text": "What is the main cause of ocean pollution?", "answers": ["Plastic waste", "Salt", "Sand", "Algae"], "correct": "Plastic waste" },
+    { "text": "Which energy source uses moving air?", "answers": ["Wind", "Coal", "Nuclear", "Oil"], "correct": "Wind" },
+    { "text": "What term describes animals at risk of extinction?", "answers": ["Endangered", "Invasive", "Domestic", "Common"], "correct": "Endangered" },
+    { "text": "What is recycling?", "answers": ["Reusing materials", "Burning waste", "Burying trash", "Exporting garbage"], "correct": "Reusing materials" },
+    { "text": "Which gas do trees absorb?", "answers": ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], "correct": "Carbon dioxide" },
+    { "text": "What causes acid rain?", "answers": ["Air pollution", "Ocean tides", "Solar flares", "Volcanoes"], "correct": "Air pollution" }
+  ]
+},
+{
+  "title": "World Politics",
+  "category": "General",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "What is the capital of the United States?", "answers": ["Washington, D.C.", "New York", "Los Angeles", "Chicago"], "correct": "Washington, D.C." },
+    { "text": "Which organization promotes international peace?", "answers": ["United Nations", "NATO", "EU", "IMF"], "correct": "United Nations" },
+    { "text": "What does democracy mean?", "answers": ["Rule by the people", "Rule by one", "Rule by military", "Rule by elites"], "correct": "Rule by the people" },
+    { "text": "Which country has a Prime Minister instead of a President?", "answers": ["United Kingdom", "United States", "Brazil", "Mexico"], "correct": "United Kingdom" },
+    { "text": "What is a constitution?", "answers": ["Fundamental law", "Political party", "Economic system", "Court ruling"], "correct": "Fundamental law" },
+    { "text": "Which body makes laws in the USA?", "answers": ["Congress", "Supreme Court", "President", "FBI"], "correct": "Congress" },
+    { "text": "What does NATO stand for?", "answers": ["North Atlantic Treaty Organization", "National Armed Task Office", "Northern Alliance Treaty Order", "Naval Atlantic Trade Organization"], "correct": "North Atlantic Treaty Organization" },
+    { "text": "Which country uses the yuan?", "answers": ["China", "Japan", "South Korea", "Thailand"], "correct": "China" },
+    { "text": "What is a veto?", "answers": ["Power to reject a decision", "Power to vote", "Power to arrest", "Power to govern"], "correct": "Power to reject a decision" },
+    { "text": "Which country left the EU in 2020?", "answers": ["United Kingdom", "France", "Italy", "Spain"], "correct": "United Kingdom" }
+  ]
+},
+{
+  "title": "Health and Lifestyle",
+  "category": "General",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Which nutrient is important for muscle growth?", "answers": ["Protein", "Sugar", "Salt", "Fat"], "correct": "Protein" },
+    { "text": "How many hours of sleep are recommended for adults?", "answers": ["7–9", "4–5", "10–12", "3–4"], "correct": "7–9" },
+    { "text": "What organ helps digest food?", "answers": ["Stomach", "Heart", "Lungs", "Brain"], "correct": "Stomach" },
+    { "text": "Which habit is good for health?", "answers": ["Regular exercise", "Smoking", "Skipping meals", "No sleep"], "correct": "Regular exercise" },
+    { "text": "What vitamin comes from sunlight?", "answers": ["Vitamin D", "Vitamin C", "Vitamin A", "Vitamin B"], "correct": "Vitamin D" },
+    { "text": "Which drink keeps you hydrated?", "answers": ["Water", "Soda", "Alcohol", "Energy drink"], "correct": "Water" },
+    { "text": "What helps reduce stress?", "answers": ["Relaxation", "Overwork", "No sleep", "Skipping breaks"], "correct": "Relaxation" },
+    { "text": "Which food group includes fruits and vegetables?", "answers": ["Plant-based", "Dairy", "Protein", "Grains"], "correct": "Plant-based" },
+    { "text": "What is a balanced diet?", "answers": ["Variety of nutrients", "Only vegetables", "Only meat", "No fat"], "correct": "Variety of nutrients" },
+    { "text": "Which activity strengthens the heart?", "answers": ["Cardio exercise", "Sleeping", "Reading", "Sitting"], "correct": "Cardio exercise" }
+  ]
+}
+,
+{
+  "title": "Advanced Mathematics",
+  "category": "Science",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "What is the value of Pi rounded to two decimals?", "answers": ["3.14", "3.15", "3.12", "3.10"], "correct": "3.14" },
+    { "text": "What is 12 squared?", "answers": ["144", "124", "132", "156"], "correct": "144" },
+    { "text": "What is the square root of 81?", "answers": ["9", "8", "7", "6"], "correct": "9" },
+    { "text": "What is 7 × 8?", "answers": ["56", "48", "54", "64"], "correct": "56" },
+    { "text": "What is the result of 100 ÷ 4?", "answers": ["25", "20", "40", "30"], "correct": "25" },
+    { "text": "What does a triangle have?", "answers": ["3 sides", "4 sides", "5 sides", "6 sides"], "correct": "3 sides" },
+    { "text": "What is the formula for the area of a rectangle?", "answers": ["length × width", "2 × length", "length + width", "width ÷ length"], "correct": "length × width" },
+    { "text": "What is 15% of 100?", "answers": ["15", "10", "20", "5"], "correct": "15" },
+    { "text": "What is an even number?", "answers": ["Divisible by 2", "Prime number", "Odd number", "Decimal"], "correct": "Divisible by 2" },
+    { "text": "What is 9 × 9?", "answers": ["81", "72", "90", "99"], "correct": "81" }
+  ]
+},
+{
+  "title": "Astronomy",
+  "category": "Science",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What is the name of Earth's natural satellite?", "answers": ["Moon", "Mars", "Venus", "Sun"], "correct": "Moon" },
+    { "text": "Which planet is known as the Morning Star?", "answers": ["Venus", "Mars", "Jupiter", "Mercury"], "correct": "Venus" },
+    { "text": "What is a supernova?", "answers": ["Exploding star", "New planet", "Black hole", "Galaxy"], "correct": "Exploding star" },
+    { "text": "What is the hottest planet?", "answers": ["Venus", "Mercury", "Mars", "Jupiter"], "correct": "Venus" },
+    { "text": "What type of galaxy is the Milky Way?", "answers": ["Spiral", "Elliptical", "Irregular", "Ring"], "correct": "Spiral" },
+    { "text": "Which planet has the most moons?", "answers": ["Jupiter", "Earth", "Mars", "Mercury"], "correct": "Jupiter" },
+    { "text": "What is a black hole?", "answers": ["Region with strong gravity", "Dark planet", "Dead star", "Asteroid"], "correct": "Region with strong gravity" },
+    { "text": "What causes eclipses?", "answers": ["Alignment of celestial bodies", "Solar storms", "Asteroids", "Gravity waves"], "correct": "Alignment of celestial bodies" },
+    { "text": "What is the asteroid belt?", "answers": ["Between Mars and Jupiter", "Beyond Neptune", "Near Earth", "Inside Mercury"], "correct": "Between Mars and Jupiter" },
+    { "text": "What is light-year a measure of?", "answers": ["Distance", "Time", "Brightness", "Speed"], "correct": "Distance" }
+  ]
+},
+{
+  "title": "World Literature",
+  "category": "General",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "Who wrote 'The Hobbit'?", "answers": ["J.R.R. Tolkien", "C.S. Lewis", "George R.R. Martin", "J.K. Rowling"], "correct": "J.R.R. Tolkien" },
+    { "text": "Who wrote 'The Catcher in the Rye'?", "answers": ["J.D. Salinger", "Mark Twain", "Ernest Hemingway", "F. Scott Fitzgerald"], "correct": "J.D. Salinger" },
+    { "text": "Which book starts with 'It was the best of times'?", "answers": ["A Tale of Two Cities", "Moby Dick", "1984", "Hamlet"], "correct": "A Tale of Two Cities" },
+    { "text": "Who wrote 'The Odyssey'?", "answers": ["Homer", "Plato", "Aristotle", "Socrates"], "correct": "Homer" },
+    { "text": "What genre is 'Harry Potter'?", "answers": ["Fantasy", "Sci-Fi", "Romance", "Horror"], "correct": "Fantasy" },
+    { "text": "Who wrote 'To Kill a Mockingbird'?", "answers": ["Harper Lee", "Jane Austen", "Virginia Woolf", "Emily Brontë"], "correct": "Harper Lee" },
+    { "text": "Which novel features Big Brother?", "answers": ["1984", "Brave New World", "Fahrenheit 451", "Animal Farm"], "correct": "1984" },
+    { "text": "Who wrote 'Animal Farm'?", "answers": ["George Orwell", "Aldous Huxley", "Tolkien", "Dickens"], "correct": "George Orwell" },
+    { "text": "What is poetry written in 14 lines called?", "answers": ["Sonnet", "Haiku", "Epic", "Ode"], "correct": "Sonnet" },
+    { "text": "Who wrote 'Hamlet'?", "answers": ["William Shakespeare", "Charles Dickens", "Jane Austen", "Oscar Wilde"], "correct": "William Shakespeare" }
+  ]
+},
+{
+  "title": "Global Sports",
+  "category": "Sports",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "Which country hosts the Wimbledon tournament?", "answers": ["United Kingdom", "USA", "France", "Australia"], "correct": "United Kingdom" },
+    { "text": "How many rings are on the Olympic flag?", "answers": ["5", "4", "6", "7"], "correct": "5" },
+    { "text": "Which sport uses a bat and ball?", "answers": ["Cricket", "Tennis", "Hockey", "Rugby"], "correct": "Cricket" },
+    { "text": "Who won the FIFA World Cup in 2018?", "answers": ["France", "Brazil", "Germany", "Argentina"], "correct": "France" },
+    { "text": "Which sport features a slam dunk?", "answers": ["Basketball", "Volleyball", "Tennis", "Baseball"], "correct": "Basketball" },
+    { "text": "What country is famous for sumo wrestling?", "answers": ["Japan", "China", "Thailand", "Korea"], "correct": "Japan" },
+    { "text": "Which race is 42.195 km long?", "answers": ["Marathon", "Sprint", "Relay", "Triathlon"], "correct": "Marathon" },
+    { "text": "Which sport uses a puck?", "answers": ["Ice hockey", "Field hockey", "Lacrosse", "Curling"], "correct": "Ice hockey" },
+    { "text": "Which athlete is known as the fastest man alive?", "answers": ["Usain Bolt", "Carl Lewis", "Michael Johnson", "Tyson Gay"], "correct": "Usain Bolt" },
+    { "text": "Which sport is played at Roland Garros?", "answers": ["Tennis", "Golf", "Cricket", "Rugby"], "correct": "Tennis" }
+  ]
+}
+,
+{
+  "title": "Psychology Basics",
+  "category": "Science",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What part of the brain controls emotions?", "answers": ["Limbic system", "Cerebellum", "Brainstem", "Occipital lobe"], "correct": "Limbic system" },
+    { "text": "Who is known as the father of psychoanalysis?", "answers": ["Sigmund Freud", "Carl Jung", "Ivan Pavlov", "Jean Piaget"], "correct": "Sigmund Freud" },
+    { "text": "What is memory?", "answers": ["Ability to store information", "Sense of smell", "Muscle reflex", "Emotional response"], "correct": "Ability to store information" },
+    { "text": "What term describes learned behavior?", "answers": ["Conditioning", "Instinct", "Impulse", "Emotion"], "correct": "Conditioning" },
+    { "text": "What does IQ measure?", "answers": ["Cognitive ability", "Emotional health", "Physical strength", "Creativity"], "correct": "Cognitive ability" },
+    { "text": "Which psychologist studied child development stages?", "answers": ["Jean Piaget", "Freud", "Skinner", "Maslow"], "correct": "Jean Piaget" },
+    { "text": "What is stress?", "answers": ["Body response to demands", "Relaxation state", "Sleep cycle", "Memory loss"], "correct": "Body response to demands" },
+    { "text": "What is motivation?", "answers": ["Reason for behavior", "Fear response", "Physical reflex", "Habit"], "correct": "Reason for behavior" },
+    { "text": "Which hormone is linked to happiness?", "answers": ["Serotonin", "Adrenaline", "Cortisol", "Insulin"], "correct": "Serotonin" },
+    { "text": "What is perception?", "answers": ["Interpretation of sensory input", "Vision only", "Memory storage", "Decision making"], "correct": "Interpretation of sensory input" }
+  ]
+},
+{
+  "title": "Business Basics",
+  "category": "General",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "What is a company?", "answers": ["Organization selling goods or services", "Government body", "School", "Bank only"], "correct": "Organization selling goods or services" },
+    { "text": "What is profit?", "answers": ["Revenue minus costs", "Total revenue", "Total costs", "Tax amount"], "correct": "Revenue minus costs" },
+    { "text": "What does CEO stand for?", "answers": ["Chief Executive Officer", "Central Economic Officer", "Company Executive Owner", "Chief Employment Officer"], "correct": "Chief Executive Officer" },
+    { "text": "What is marketing?", "answers": ["Promoting products", "Producing goods", "Paying taxes", "Hiring staff"], "correct": "Promoting products" },
+    { "text": "What is a customer?", "answers": ["Person buying a product", "Company owner", "Supplier", "Employee"], "correct": "Person buying a product" },
+    { "text": "What is a startup?", "answers": ["New business", "Large corporation", "Government agency", "Nonprofit only"], "correct": "New business" },
+    { "text": "What is an invoice?", "answers": ["Bill for goods or services", "Contract", "Salary", "Advertisement"], "correct": "Bill for goods or services" },
+    { "text": "What does HR stand for?", "answers": ["Human Resources", "High Revenue", "Health Regulation", "Hiring Register"], "correct": "Human Resources" },
+    { "text": "What is a brand?", "answers": ["Company identity", "Office building", "Product price", "Legal document"], "correct": "Company identity" },
+    { "text": "What is competition?", "answers": ["Rivalry between businesses", "Teamwork", "Cooperation", "Monopoly"], "correct": "Rivalry between businesses" }
+  ]
+},
+{
+  "title": "Ethics and Society",
+  "category": "General",
+  "difficulty": "hard",
+  "questions": [
+    { "text": "What is ethics?", "answers": ["Study of moral principles", "Political system", "Economic theory", "Scientific method"], "correct": "Study of moral principles" },
+    { "text": "What does equality mean?", "answers": ["Equal rights for all", "Same income for everyone", "No laws", "Total freedom"], "correct": "Equal rights for all" },
+    { "text": "What is discrimination?", "answers": ["Unfair treatment", "Equal opportunity", "Legal process", "Cultural tradition"], "correct": "Unfair treatment" },
+    { "text": "What is freedom of speech?", "answers": ["Right to express opinions", "Right to vote", "Right to work", "Right to travel"], "correct": "Right to express opinions" },
+    { "text": "What is justice?", "answers": ["Fairness", "Punishment only", "Authority", "Wealth"], "correct": "Fairness" },
+    { "text": "What is responsibility?", "answers": ["Being accountable for actions", "Avoiding decisions", "Following orders blindly", "Ignoring rules"], "correct": "Being accountable for actions" },
+    { "text": "What is tolerance?", "answers": ["Respecting differences", "Ignoring problems", "Avoiding people", "Enforcing rules"], "correct": "Respecting differences" },
+    { "text": "What is a law?", "answers": ["Rule enforced by authority", "Personal opinion", "Suggestion", "Custom"], "correct": "Rule enforced by authority" },
+    { "text": "What is privacy?", "answers": ["Right to personal space", "Public information", "Freedom of speech", "Property right"], "correct": "Right to personal space" },
+    { "text": "What is solidarity?", "answers": ["Mutual support", "Competition", "Isolation", "Hierarchy"], "correct": "Mutual support" }
+  ]
+},
+{
+  "title": "Travel and Tourism",
+  "category": "Geography",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "What document is needed to travel abroad?", "answers": ["Passport", "Driver's license", "Student card", "Library card"], "correct": "Passport" },
+    { "text": "What is tourism?", "answers": ["Travel for leisure", "Daily commuting", "Working remotely", "Studying abroad"], "correct": "Travel for leisure" },
+    { "text": "Which city is known as the Big Apple?", "answers": ["New York", "Los Angeles", "Chicago", "Boston"], "correct": "New York" },
+    { "text": "Which country is famous for the Eiffel Tower?", "answers": ["France", "Italy", "Spain", "Germany"], "correct": "France" },
+    { "text": "What is a hotel?", "answers": ["Place to stay", "Place to eat", "Museum", "Airport"], "correct": "Place to stay" },
+    { "text": "Which continent is Brazil in?", "answers": ["South America", "North America", "Europe", "Africa"], "correct": "South America" },
+    { "text": "What is a tourist attraction?", "answers": ["Place of interest", "Office building", "Factory", "School"], "correct": "Place of interest" },
+    { "text": "Which transport flies in the sky?", "answers": ["Airplane", "Train", "Car", "Ship"], "correct": "Airplane" },
+    { "text": "What currency is used in the UK?", "answers": ["Pound sterling", "Euro", "Dollar", "Yen"], "correct": "Pound sterling" },
+    { "text": "Which ocean borders California?", "answers": ["Pacific", "Atlantic", "Indian", "Arctic"], "correct": "Pacific" }
+  ]
+}
+,
+{
+  "title": "Food and Nutrition",
+  "category": "Science",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Which nutrient provides energy?", "answers": ["Carbohydrates", "Vitamins", "Water", "Minerals"], "correct": "Carbohydrates" },
+    { "text": "What vitamin is found in citrus fruits?", "answers": ["Vitamin C", "Vitamin A", "Vitamin D", "Vitamin B12"], "correct": "Vitamin C" },
+    { "text": "Which food is high in protein?", "answers": ["Eggs", "Bread", "Rice", "Apple"], "correct": "Eggs" },
+    { "text": "What is a balanced meal?", "answers": ["Mix of nutrients", "Only vegetables", "Only meat", "Only sugar"], "correct": "Mix of nutrients" },
+    { "text": "Which drink contains caffeine?", "answers": ["Coffee", "Milk", "Water", "Juice"], "correct": "Coffee" },
+    { "text": "What mineral strengthens bones?", "answers": ["Calcium", "Iron", "Sodium", "Potassium"], "correct": "Calcium" },
+    { "text": "Which food is a dairy product?", "answers": ["Cheese", "Apple", "Chicken", "Rice"], "correct": "Cheese" },
+    { "text": "What does fiber help with?", "answers": ["Digestion", "Vision", "Breathing", "Memory"], "correct": "Digestion" },
+    { "text": "Which food contains healthy fats?", "answers": ["Avocado", "Candy", "Soda", "White bread"], "correct": "Avocado" },
+    { "text": "What happens if you don't drink enough water?", "answers": ["Dehydration", "Stronger muscles", "Better sleep", "Weight gain"], "correct": "Dehydration" }
+  ]
+},
+{
+  "title": "Physics Basics",
+  "category": "Science",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "What is force?", "answers": ["Push or pull", "Energy", "Speed", "Mass"], "correct": "Push or pull" },
+    { "text": "What unit measures force?", "answers": ["Newton", "Joule", "Watt", "Pascal"], "correct": "Newton" },
+    { "text": "What is gravity?", "answers": ["Attraction between masses", "Type of energy", "Electric charge", "Heat transfer"], "correct": "Attraction between masses" },
+    { "text": "What is speed?", "answers": ["Distance over time", "Mass times acceleration", "Energy used", "Force applied"], "correct": "Distance over time" },
+    { "text": "Which object falls faster?", "answers": ["Same in vacuum", "Heavier one", "Lighter one", "Depends on color"], "correct": "Same in vacuum" },
+    { "text": "What is energy?", "answers": ["Ability to do work", "Type of matter", "Mass", "Volume"], "correct": "Ability to do work" },
+    { "text": "Which form of energy is light?", "answers": ["Radiant", "Thermal", "Kinetic", "Chemical"], "correct": "Radiant" },
+    { "text": "What happens when you increase mass?", "answers": ["More inertia", "Less gravity", "Less weight", "No change"], "correct": "More inertia" },
+    { "text": "What is friction?", "answers": ["Resistance to motion", "Type of force field", "Energy source", "Motion itself"], "correct": "Resistance to motion" },
+    { "text": "What unit measures energy?", "answers": ["Joule", "Newton", "Watt", "Volt"], "correct": "Joule" }
+  ]
+},
+{
+  "title": "World Religions",
+  "category": "General",
+  "difficulty": "medium",
+  "questions": [
+    { "text": "Which religion is based on the Bible?", "answers": ["Christianity", "Islam", "Hinduism", "Buddhism"], "correct": "Christianity" },
+    { "text": "Which religion follows the Quran?", "answers": ["Islam", "Judaism", "Christianity", "Hinduism"], "correct": "Islam" },
+    { "text": "Who is the founder of Buddhism?", "answers": ["Siddhartha Gautama", "Confucius", "Muhammad", "Jesus"], "correct": "Siddhartha Gautama" },
+    { "text": "Which religion originated in India?", "answers": ["Hinduism", "Christianity", "Islam", "Judaism"], "correct": "Hinduism" },
+    { "text": "What is a synagogue?", "answers": ["Jewish place of worship", "Christian church", "Muslim mosque", "Buddhist temple"], "correct": "Jewish place of worship" },
+    { "text": "What is a mosque?", "answers": ["Muslim place of worship", "Jewish temple", "Christian church", "Hindu shrine"], "correct": "Muslim place of worship" },
+    { "text": "What is the holy city of Islam?", "answers": ["Mecca", "Jerusalem", "Rome", "Varanasi"], "correct": "Mecca" },
+    { "text": "Which religion has the Torah?", "answers": ["Judaism", "Christianity", "Islam", "Buddhism"], "correct": "Judaism" },
+    { "text": "What is meditation often associated with?", "answers": ["Buddhism", "Christianity", "Judaism", "Islam"], "correct": "Buddhism" },
+    { "text": "What is a church?", "answers": ["Christian place of worship", "Government building", "School", "Market"], "correct": "Christian place of worship" }
+  ]
+},
+{
+  "title": "Transportation",
+  "category": "Technology",
+  "difficulty": "easy",
+  "questions": [
+    { "text": "Which vehicle flies?", "answers": ["Airplane", "Car", "Train", "Bus"], "correct": "Airplane" },
+    { "text": "Which vehicle runs on rails?", "answers": ["Train", "Car", "Bike", "Ship"], "correct": "Train" },
+    { "text": "Which transport is used on water?", "answers": ["Boat", "Bus", "Truck", "Plane"], "correct": "Boat" },
+    { "text": "What fuels most cars?", "answers": ["Gasoline", "Coal", "Water", "Wood"], "correct": "Gasoline" },
+    { "text": "Which transport is electric?", "answers": ["Tram", "Horse", "Bicycle", "Ship"], "correct": "Tram" },
+    { "text": "What is public transport?", "answers": ["Shared transport", "Private car", "Personal bike", "Taxi only"], "correct": "Shared transport" },
+    { "text": "Which vehicle has two wheels?", "answers": ["Bicycle", "Car", "Bus", "Train"], "correct": "Bicycle" },
+    { "text": "Which transport is fastest?", "answers": ["Airplane", "Train", "Car", "Boat"], "correct": "Airplane" },
+    { "text": "What do traffic lights control?", "answers": ["Traffic flow", "Weather", "Speed limit", "Parking"], "correct": "Traffic flow" },
+    { "text": "Which transport is eco-friendly?", "answers": ["Bicycle", "Car", "Plane", "Truck"], "correct": "Bicycle" }
+  ]
+}
+
+]

@@ -1,0 +1,194 @@
+<odoo>
+  <data noupdate="1">
+
+    <!-- Skill type -->
+    <record id="skill_type_soft" model="hr.skill.type">
+      <field name="name">Soft Skills</field>
+    </record>
+
+    <!-- Users -->
+    <record id="user_interviewer_1" model="res.users">
+      <field name="name">Interviewer One</field>
+      <field name="login">interviewer1</field>
+      <field name="email">interviewer1@example.com</field>
+    </record>
+    <record id="user_interviewer_2" model="res.users">
+      <field name="name">Interviewer Two</field>
+      <field name="login">interviewer2</field>
+      <field name="email">interviewer2@example.com</field>
+    </record>
+    <record id="user_interviewer_3" model="res.users">
+      <field name="name">Interviewer Three</field>
+      <field name="login">interviewer3</field>
+      <field name="email">interviewer3@example.com</field>
+    </record>
+
+    <!-- Jobs -->
+    <record id="job_backend_dev" model="hr.job">
+      <field name="name">Backend Developer</field>
+    </record>
+    <record id="job_frontend_dev" model="hr.job">
+      <field name="name">Frontend Developer</field>
+    </record>
+    <record id="job_data_analyst" model="hr.job">
+      <field name="name">Data Analyst</field>
+    </record>
+
+    <!-- Skills -->
+    <record id="skill_communication" model="hr.skill">
+      <field name="name">Communication</field>
+      <field name="skill_type_id" ref="skill_type_soft"/>
+    </record>
+    <record id="skill_technical" model="hr.skill">
+      <field name="name">Technical Skills</field>
+      <field name="skill_type_id" ref="skill_type_soft"/>
+    </record>
+    <record id="skill_teamwork" model="hr.skill">
+      <field name="name">Teamwork</field>
+      <field name="skill_type_id" ref="skill_type_soft"/>
+    </record>
+    <record id="skill_problem_solving" model="hr.skill">
+      <field name="name">Problem Solving</field>
+      <field name="skill_type_id" ref="skill_type_soft"/>
+    </record>
+    <record id="skill_motivation" model="hr.skill">
+      <field name="name">Motivation</field>
+      <field name="skill_type_id" ref="skill_type_soft"/>
+    </record>
+
+    <!-- Partners (candidates) -->
+    <record id="partner_candidate_one" model="res.partner">
+      <field name="name">Candidate One</field>
+      <field name="email">candidate.one@test.com</field>
+    </record>
+    <record id="partner_candidate_two" model="res.partner">
+      <field name="name">Candidate Two</field>
+      <field name="email">candidate.two@test.com</field>
+    </record>
+    <record id="partner_candidate_three" model="res.partner">
+      <field name="name">Candidate Three</field>
+      <field name="email">candidate.three@test.com</field>
+    </record>
+
+    <!-- HR candidates (required by hr.applicant.candidate_id) -->
+    <record id="candidate_one" model="hr.candidate">
+      <field name="partner_name">Candidate One</field>
+      <field name="partner_id" ref="partner_candidate_one"/>
+    </record>
+    <record id="candidate_two" model="hr.candidate">
+      <field name="partner_name">Candidate Two</field>
+      <field name="partner_id" ref="partner_candidate_two"/>
+    </record>
+    <record id="candidate_three" model="hr.candidate">
+      <field name="partner_name">Candidate Three</field>
+      <field name="partner_id" ref="partner_candidate_three"/>
+    </record>
+
+    <!-- Applicants -->
+    <record id="applicant_one" model="hr.applicant">
+      <field name="candidate_id" ref="candidate_one"/>
+      <field name="partner_id" ref="partner_candidate_one"/>
+      <field name="job_id" ref="job_backend_dev"/>
+      <field name="access_token">token_candidate_one_123456</field>
+    </record>
+    <record id="applicant_two" model="hr.applicant">
+      <field name="candidate_id" ref="candidate_two"/>
+      <field name="partner_id" ref="partner_candidate_two"/>
+      <field name="job_id" ref="job_frontend_dev"/>
+      <field name="access_token">token_candidate_two_7890ab</field>
+    </record>
+    <record id="applicant_three" model="hr.applicant">
+      <field name="candidate_id" ref="candidate_three"/>
+      <field name="partner_id" ref="partner_candidate_three"/>
+      <field name="job_id" ref="job_data_analyst"/>
+      <field name="access_token">token_candidate_three_cdef12</field>
+    </record>
+
+    <!-- Feedbacks -->
+    <record id="feedback_1" model="hr.feedback">
+      <field name="author_id" ref="user_interviewer_1"/>
+      <field name="application_id" ref="applicant_one"/>
+      <field name="description">Positive interview overall.</field>
+    </record>
+    <record id="feedback_2" model="hr.feedback">
+      <field name="author_id" ref="user_interviewer_2"/>
+      <field name="application_id" ref="applicant_two"/>
+      <field name="description">Strong technical profile.</field>
+    </record>
+    <record id="feedback_3" model="hr.feedback">
+      <field name="author_id" ref="user_interviewer_3"/>
+      <field name="application_id" ref="applicant_three"/>
+      <field name="description">Good motivation.</field>
+    </record>
+
+    <record id="feedback_4" model="hr.feedback">
+      <field name="author_id" ref="user_interviewer_1"/>
+      <field name="application_id" ref="applicant_two"/>
+      <field name="description">Additional interview notes: solid communication and team fit.</field>
+    </record>
+
+    <record id="feedback_5" model="hr.feedback">
+      <field name="author_id" ref="user_interviewer_2"/>
+      <field name="application_id" ref="applicant_three"/>
+      <field name="description">Additional interview notes: good problem solving and motivation.</field>
+    </record>
+
+
+
+
+
+    <!-- Questions -->
+    <record id="question_1" model="hr.feedback.question">
+      <field name="label">How was the communication?</field>
+      <field name="score">4</field>
+      <field name="answer">Communication was clear and effective, with only minor points that could be improved.</field>
+      <field name="feedback_id" ref="feedback_1"/>
+      <field name="skill_id" ref="skill_communication"/>
+    </record>
+    <record id="question_2" model="hr.feedback.question">
+      <field name="label">Technical knowledge level?</field>
+      <field name="score">5</field>
+      <field name="answer">Excellent technical knowledge with a strong understanding of the required concepts.</field>
+      <field name="feedback_id" ref="feedback_1"/>
+      <field name="skill_id" ref="skill_technical"/>
+    </record>
+    <record id="question_3" model="hr.feedback.question">
+      <field name="label">Teamwork attitude?</field>
+      <field name="score">3</field>
+      <field name="answer">Shows a correct teamwork attitude but could be more proactive and collaborative.</field>
+      <field name="feedback_id" ref="feedback_2"/>
+      <field name="skill_id" ref="skill_teamwork"/>
+    </record>
+    <record id="question_4" model="hr.feedback.question">
+      <field name="label">Problem solving capability?</field>
+      <field name="score">5</field>
+      <field name="answer">Very strong problem-solving skills, able to analyze and resolve complex issues efficiently.</field>
+      <field name="feedback_id" ref="feedback_3"/>
+      <field name="skill_id" ref="skill_problem_solving"/>
+    </record>
+    <record id="question_5" model="hr.feedback.question">
+      <field name="label">Motivation level?</field>
+      <field name="score">4</field>
+      <field name="answer">Highly motivated and engaged, with consistent effort throughout the tasks.</field>
+      <field name="feedback_id" ref="feedback_3"/>
+      <field name="skill_id" ref="skill_motivation"/>
+    </record>
+
+    <record id="question_6" model="hr.feedback.question">
+      <field name="label">Collaboration and communication?</field>
+      <field name="score">4</field>
+      <field name="answer">Communicates clearly and collaborates well with team members.</field>
+      <field name="feedback_id" ref="feedback_4"/>
+      <field name="skill_id" ref="skill_communication"/>
+    </record>
+
+    <record id="question_7" model="hr.feedback.question">
+      <field name="label">Problem solving in practice?</field>
+      <field name="score">5</field>
+      <field name="answer">Demonstrated sound problem solving during technical tasks.</field>
+      <field name="feedback_id" ref="feedback_5"/>
+      <field name="skill_id" ref="skill_problem_solving"/>
+    </record>
+
+  </data>
+</odoo>

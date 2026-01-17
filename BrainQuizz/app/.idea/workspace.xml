@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="628d75bf-0451-4d78-819b-cd024c51bbdf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/Check" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/Check" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/assets/quizzes.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/Converters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/Converters.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/QuizDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/QuizDao.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/QuizDatabase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/database/QuizDatabase.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/repository/QuizRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/data/repository/QuizRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/network/login/AuthService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/network/login/AuthService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/network/trivia/TriviaService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/network/trivia/TriviaService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/He2bApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/He2bApp.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/HomeScreen/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/HomeScreen/HomeScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/game/QuizGameScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/game/QuizGameScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/game/QuizGameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/game/QuizGameViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/login/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/quiz/QuizListScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/quiz/QuizListScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/quiz/QuizListViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/he2bproject/ui/quiz/QuizListViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="35yjwMbYZjYKSdBfHnDgHgqNL0s" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/5DEV5/62496/Projet/He2bProject/app"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="628d75bf-0451-4d78-819b-cd024c51bbdf" name="Changes" comment="" />
+      <created>1764089442632</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764089442632</updated>
+    </task>
+    <servers />
+  </component>
+</project>

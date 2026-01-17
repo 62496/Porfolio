@@ -1,0 +1,36 @@
+
+faut il faire les tests?
+a ton le pc pour les modif ?
+revoir legerement le html css 
+
+revoir le retour erreur de tentative connnexion feedback pour renvoyer un erreur et pas rien 
+
+revoir le retour erreur du test connection pour pas leak info ??relire enoncer pour vori si pas prendre la secu en compte
+
+
+
+
+
+
+
+
+faut il faire la gestion de user ?? relire enoncer pour vori si pas prendre la secu en compte FAIT Pas besoin
+faut il ajouter admin??relire enoncer pour vori si pas prendre la secu en compte
+
+
+
+DONE : 
+
+bien verifier que on utilise crispy 
+
+remmtre le bouton feedback gitlab
+
+fix question vue list
+
+ajouter le api.change 
+
+ajouter les fonctionnalité 
+
+Abort : 
+
+ajouter les view foncion remplacer views.config_view par vie et ajouter le nom app pour  modifier les lien dans _base64

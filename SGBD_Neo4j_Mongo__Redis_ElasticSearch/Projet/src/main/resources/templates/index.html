@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Human Meetings System - UI</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f9; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        section { margin-bottom: 18px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        h3 { margin-top: 0; color: #007bff; }
+        input, button, select { padding: 10px; margin: 6px 0; width: 100%; box-sizing: border-box; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+        button { cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        pre { background: #272822; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow-x: auto; min-height: 40px; white-space: pre-wrap; }
+        small { color: #666; display: block; margin-bottom: 5px; }
+        select { background-color: #fff; border: 1px solid #ccc; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Human Meetings Interface</h1>
+
+    <section>
+        <h3>1. Créer un utilisateur</h3>
+        <input type="text" id="username" placeholder="Nom d'utilisateur" />
+        <button onclick="createUser()">Créer</button>
+    </section>
+
+    <section>
+        <h3>2. Liste des utilisateurs</h3>
+        <button onclick="listUsers()">Rafraîchir la liste</button>
+        <pre id="userListDisplay">[]</pre>
+    </section>
+
+    <section>
+        <h3>3. Ajouter des intérêts (MongoDB)</h3>
+        <small>Utilisateur :</small>
+        <select id="select_interests_user"></select>
+        <input type="text" id="interestsList" placeholder="Ex: Java, Sport, Cinema" />
+        <button onclick="addInterests()">Enregistrer les intérêts</button>
+    </section>
+
+    <section>
+        <h3>4. Liste de tous les intérêts (MongoDB)</h3>
+        <button onclick="listAllInterests()">Afficher tous les intérêts existants</button>
+        <pre id="allInterestsDisplay">Cliquez pour charger...</pre>
+    </section>
+
+    <section>
+        <h3>5. Liste des intérêts d’un utilisateur</h3>
+        <select id="select_show_interests"></select>
+        <button onclick="getUserInterests()">Afficher les intérêts</button>
+        <pre id="userInterestsDisplay">Les intérêts s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>6. Simuler un Meeting</h3>
+        <div class="row">
+            <div><small>Utilisateur A :</small><select id="select_meeting_userA"></select></div>
+            <div><small>Utilisateur B :</small><select id="select_meeting_userB"></select></div>
+        </div>
+        <input type="text" id="interest" placeholder="Intérêt (ex: Java)" />
+        <button onclick="simulateMeeting()">Enregistrer le Meeting</button>
+    </section>
+
+    <section>
+        <h3>7. Recommandations & Points</h3>
+        <select id="select_points_reco"></select>
+        <div class="row">
+            <button onclick="getPoints()">Voir Points</button>
+            <button onclick="getRecommendations()">Voir Recos (Graph)</button>
+        </div>
+        <pre id="resultDisplay">Résultats s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>8. Recommandations par Intérêts (Mongo + Elastic)</h3>
+        <select id="select_reco_elastic"></select>
+        <button onclick="getInterestRecommendations()">Trouver des profils similaires</button>
+        <pre id="recoInterestDisplay">Les suggestions s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>9. Recommandations avancées (Neo4j)</h3>
+        <select id="select_reco_advanced"></select>
+        <button onclick="getAdvancedGraphRecommendations()">Voir recommandations avancées</button>
+        <pre id="advancedRecoDisplay">Les recommandations s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>10. Historique des Meetings</h3>
+        <select id="select_history"></select>
+        <button onclick="viewMeetings()">Voir les Meetings</button>
+        <pre id="meetingsHistoryDisplay">Les meetings s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>11. Recherche Floue des intérêts (Elasticsearch)</h3>
+        <input type="text" id="fuzzyInterestInput" placeholder="Ex: Jvaa, Pythn..." />
+        <button onclick="fuzzySearchInterests()">Rechercher</button>
+        <pre id="fuzzyDisplay">Résultats de recherche...</pre>
+    </section>
+
+    <section>
+        <h3>12. Recherche Floue d'Utilisateurs par user ou intérêt (Elasticsearch)</h3>
+        <input type="text" id="userFuzzyInput" placeholder="Ex: Eloir, Admin..." />
+        <button onclick="fuzzySearchUsers()">Rechercher Utilisateur</button>
+        <pre id="userFuzzyDisplay">Les résultats s'afficheront ici...</pre>
+    </section>
+
+    <section>
+        <h3>13. Recherche Floue de meetings par intérêt ou user(Elasticsearch)</h3>
+        <input type="text" id="fuzzyMeetingInput" placeholder="Ex: Eloir, Admin..." />
+        <button onclick="fuzzySearchMeetings()">Rechercher Meeting</button>
+        <pre id="fuzzyMeetingDisplay">Les résultats s'afficheront ici...</pre>
+    </section>
+</div>
+
+<script>
+    /** @constant {string} Base URL for the Spring Boot API */
+    const API_URL = "http://localhost:8080/api";
+
+    /** @constant {string[]} List of HTML select element IDs to be populated with users */
+    const SELECT_IDS = [
+      'select_interests_user', 'select_show_interests',
+      'select_meeting_userA', 'select_meeting_userB',
+      'select_points_reco', 'select_reco_elastic',
+      'select_reco_advanced', 'select_history'
+    ];
+
+    /**
+     * Helper to display data in a specific HTML element.
+     * @param {string} id - The element ID.
+     * @param {any} data - The data to display (string or object).
+     */
+    function display(id, data) {
+      document.getElementById(id).innerText =
+        typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    }
+
+    /**
+     * Helper to display a list with a title or an empty message.
+     * @param {string} displayId - The element ID.
+     * @param {string} title - The header text.
+     * @param {Array} list - The data array.
+     * @param {string} emptyMessage - Message to show if the list is empty.
+     */
+    function displayList(displayId, title, list, emptyMessage) {
+      const displayArea = document.getElementById(displayId);
+      if (!list || list.length === 0) { displayArea.innerText = emptyMessage; return; }
+      displayArea.innerText = title + "\n" + (Array.isArray(list) ? list.join('\n') : list);
+    }
+
+    /**
+     * Extracts a readable error message from the response body.
+     * @param {any} body - The response body.
+     * @returns {string} The error message.
+     */
+    function extractErrorMessage(body) {
+      if (body == null) return "Unknown error.";
+      if (typeof body === "string") return body;
+      if (body.message) return body.message;
+      if (body.error) return body.error;
+      return JSON.stringify(body);
+    }
+
+    /**
+     * Generic wrapper for fetch requests with alert notifications.
+     * @param {string} url - Target URL.
+     * @param {Object} options - Fetch options (method, headers, body).
+     * @param {Object} messages - Custom success and error alert messages.
+     * @returns {Promise<Object>} Object containing ok status, data, and HTTP status.
+     */
+    async function request(url, options = {}, { okMsg, errorMsg } = {}) {
+      try {
+        const resp = await fetch(url, options);
+        const contentType = resp.headers.get("content-type") || "";
+        const body = contentType.includes("application/json") ? await resp.json() : await resp.text();
+
+        if (!resp.ok) {
+          const msg = errorMsg || `Error (${resp.status}): ${extractErrorMessage(body)}`;
+          alert(msg);
+          return { ok: false, data: body, status: resp.status };
+        }
+
+        if (okMsg) alert(okMsg);
+        return { ok: true, data: body, status: resp.status };
+
+      } catch (e) {
+        alert(`Network Error: ${e.message}`);
+        return { ok: false, data: null, status: 0 };
+      }
+    }
+
+    /**
+     * Fetches users and populates all select dropdowns in the UI.
+     */
+    async function loadExistingUsers() {
+      const res = await request(`${API_URL}/users`);
+      if (!res.ok) return;
+
+      const users = res.data || [];
+
+      SELECT_IDS.forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) return;
+
+        select.innerHTML = '<option value="">-- Select --</option>';
+
+        users.forEach(userStr => {
+          const parts = String(userStr).split(" - ");
+          const option = document.createElement('option');
+          option.value = parts[0];
+          option.textContent = userStr;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    /**
+     * UI Action: Creates a new user after checking for duplicates.
+     */
+    async function createUser() {
+      const nameInput = document.getElementById('username');
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        alert("Please enter a name.");
+        return;
+      }
+
+      // UI-side duplicate check
+      const checkRes = await request(`${API_URL}/users`);
+      if (checkRes.ok) {
+        const existingUsers = checkRes.data || [];
+        const isDuplicate = existingUsers.some(userStr => {
+          const parts = String(userStr).split(" - ");
+          const existingName = (parts[1] || "").trim().toLowerCase();
+          return existingName === name.toLowerCase();
+        });
+
+        if (isDuplicate) {
+          alert(`The user "${name}" already exists!`);
+          return;
+        }
+      }
+
+      const res = await request(
+        `${API_URL}/users?username=${encodeURIComponent(name)}`,
+        { method: 'POST' },
+        { okMsg: `User created: ${name}` }
+      );
+
+      if (!res.ok) return;
+
+      nameInput.value = "";
+      await listUsers();
+      await loadExistingUsers();
+    }
+
+    /** UI Action: Refreshes the general user list display. */
+    async function listUsers() {
+      const res = await request(`${API_URL}/users`);
+      if (res.ok) display('userListDisplay', res.data);
+    }
+
+    /** UI Action: Associates interests with a selected user. */
+    async function addInterests() {
+      const id = document.getElementById('select_interests_user').value;
+      const interests = document.getElementById('interestsList').value.trim();
+
+      if (!id) { alert("Select a user."); return; }
+      if (!interests) { alert("Enter at least one interest (comma separated)."); return; }
+
+      const arr = interests.split(',').map(i => i.trim()).filter(Boolean);
+
+      await request(`${API_URL}/users/${id}/interests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(arr)
+      }, { okMsg: "Interests saved" });
+    }
+
+    /** UI Action: Fetches and displays interests for a selected user. */
+    async function getUserInterests() {
+      const id = document.getElementById('select_show_interests').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/users/${id}/interests`);
+      if (res.ok) displayList('userInterestsDisplay', "Interests:", res.data, "No interests found.");
+    }
+
+    /** UI Action: Simulates a meeting between two different users. */
+    async function simulateMeeting() {
+      const a = document.getElementById('select_meeting_userA').value;
+      const b = document.getElementById('select_meeting_userB').value;
+      const interest = document.getElementById('interest').value.trim();
+
+      if (!a || !b) { alert("Select User A and User B."); return; }
+      if (a === b) { alert("User A and User B must be different."); return; }
+      if (!interest) { alert("Enter a topic for the meeting."); return; }
+
+      await request(
+        `${API_URL}/meetings/simulate?userA=${a}&userB=${b}&interest=${encodeURIComponent(interest)}`,
+        { method: 'POST' },
+        { okMsg: "Meeting recorded" }
+      );
+    }
+
+    /** UI Action: Retrieves total points for a user. */
+    async function getPoints() {
+      const id = document.getElementById('select_points_reco').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/users/${id}/points`);
+      if (res.ok) display('resultDisplay', `Total points: ${res.data}`);
+    }
+
+    /** UI Action: Fetches basic graph recommendations (Neo4j). */
+    async function getRecommendations() {
+      const id = document.getElementById('select_points_reco').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/recommendations/graph/${id}`);
+      if (res.ok) display('resultDisplay', res.data);
+    }
+
+    /** UI Action: Fetches interest-based recommendations (Elasticsearch). */
+    async function getInterestRecommendations() {
+      const id = document.getElementById('select_reco_elastic').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/recommendations/interests/${id}`);
+      if (res.ok) displayList('recoInterestDisplay', "Similar Users:", res.data, "None.");
+    }
+
+    /** UI Action: Fetches hybrid/advanced recommendations (Neo4j + MongoDB). */
+    async function getAdvancedGraphRecommendations() {
+      const id = document.getElementById('select_reco_advanced').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/recommendations/graph/advanced/${id}`);
+      if (res.ok) displayList('advancedRecoDisplay', "Advanced Recs:", res.data, "None.");
+    }
+
+    /** UI Action: Displays meeting history for a selected user. */
+    async function viewMeetings() {
+      const id = document.getElementById('select_history').value;
+      if (!id) { alert("Select a user."); return; }
+
+      const res = await request(`${API_URL}/users/${id}/meetings`);
+      if (res.ok) displayList('meetingsHistoryDisplay', "History:", res.data, "Empty.");
+    }
+
+    /** UI Action: Lists all unique interests across the platform. */
+    async function listAllInterests() {
+      const res = await request(`${API_URL}/interests`);
+      if (res.ok) display('allInterestsDisplay', Array.isArray(res.data) ? res.data.join(', ') : res.data);
+    }
+
+    /** UI Action: Performs fuzzy search on interest names. */
+    async function fuzzySearchInterests() {
+      const q = document.getElementById('fuzzyInterestInput').value.trim();
+      if (!q) { alert("Enter a search query."); return; }
+
+      const res = await request(`${API_URL}/search/interests?q=${encodeURIComponent(q)}`);
+      if (res.ok) display('fuzzyDisplay', res.data);
+    }
+
+    /** UI Action: Performs fuzzy search on meeting content. */
+    async function fuzzySearchMeetings() {
+        const q = document.getElementById('fuzzyMeetingInput').value.trim();
+        if (!q) { alert("Enter a search query."); return; }
+
+        const res = await request(`${API_URL}/search/meetings?q=${encodeURIComponent(q)}`);
+        // Debugging output
+        console.log("res.data:", res.data + " ok " + res.ok);
+
+        if (res.ok) display('fuzzyMeetingDisplay', res.data);
+    }
+
+    /** UI Action: Performs fuzzy search on usernames. */
+    async function fuzzySearchUsers() {
+      const q = document.getElementById('userFuzzyInput').value.trim();
+      if (!q) { alert("Enter a search query."); return; }
+
+      const res = await request(`${API_URL}/search/users?q=${encodeURIComponent(q)}`);
+      if (res.ok) display('userFuzzyDisplay', res.data);
+    }
+
+    /** Initial startup: load initial data when the page loads. */
+    window.onload = async () => {
+      await listUsers();
+      await loadExistingUsers();
+    };
+</script>
+</body>
+</html>
