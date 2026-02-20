@@ -53,7 +53,7 @@ export default function DeleteInventoryModal({ isOpen, onClose, item, onDelete }
                                 {book.title}
                             </h3>
                             <p className="text-[14px] text-[#6e6e73]">
-                                {item.quantity} units @ €{item.pricePerUnit?.toFixed(2)}
+                                {item.quantity} units @ ${item.pricePerUnit?.toFixed(2)}
                             </p>
                         </div>
                     </div>

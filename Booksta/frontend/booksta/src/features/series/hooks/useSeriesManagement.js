@@ -3,30 +3,16 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import seriesService from '../../../api/services/seriesService';
 import bookService from '../../../api/services/bookService';
-import authorService from '../../../api/services/authorService';
 import authService from '../../../api/services/authService';
-import { seriesSchema, librarianSeriesSchema } from '../validations/seriesSchema';
+import { seriesSchema } from '../validations/seriesSchema';
 
 export const useSeriesManagement = () => {
     const currentUser = useMemo(() => authService.getCurrentUser(), []);
-
-    // Role checks
-    const isLibrarian = useMemo(() => {
-        return currentUser?.roles?.some(role => role.name === 'LIBRARIAN') || false;
-    }, [currentUser]);
-
-    const isAuthor = useMemo(() => {
-        return currentUser?.roles?.some(role => role.name === 'AUTHOR') || false;
-    }, [currentUser]);
 
     // Series state
     const [series, setSeries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // Authors list (for librarian to select author when creating series)
-    const [authors, setAuthors] = useState([]);
-    const [selectedAuthorId, setSelectedAuthorId] = useState(null);
 
     // Selected series for modals
     const [selectedSeries, setSelectedSeries] = useState(null);
@@ -53,14 +39,13 @@ export const useSeriesManagement = () => {
     const [isAddBooksModalOpen, setIsAddBooksModalOpen] = useState(false);
     const [addBooksLoading, setAddBooksLoading] = useState(false);
 
-    // Forms - use different schema for librarians
+    // Forms
     const createForm = useForm({
-        resolver: yupResolver(isLibrarian ? librarianSeriesSchema : seriesSchema),
+        resolver: yupResolver(seriesSchema),
         mode: 'onChange',
         defaultValues: {
             title: '',
             description: '',
-            authorId: '',
         },
     });
 
@@ -77,65 +62,41 @@ export const useSeriesManagement = () => {
     // Data Fetching
     // ========================
 
-    const fetchAuthors = useCallback(async () => {
-        if (!isLibrarian) return;
-        try {
-            const data = await authorService.getAll();
-            setAuthors(data || []);
-        } catch (err) {
-            console.error('Error fetching authors:', err);
-        }
-    }, [isLibrarian]);
-
     const fetchSeries = useCallback(async () => {
+        const authorId = currentUser?.authorId;
+        if (!authorId) {
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         setError(null);
         try {
-            if (isLibrarian) {
-                // Librarian sees all series
-                const data = await seriesService.getAll();
-                setSeries(data || []);
-            } else if (isAuthor && currentUser?.authorId) {
-                // Author sees only their own series
-                const data = await seriesService.getByAuthor(currentUser.authorId);
-                setSeries(data || []);
-            } else {
-                setSeries([]);
-            }
+            const data = await seriesService.getByAuthor(authorId);
+            setSeries(data || []);
         } catch (err) {
             setError('Failed to load series');
             console.error('Error fetching series:', err);
         } finally {
             setLoading(false);
         }
-    }, [isLibrarian, isAuthor, currentUser?.authorId]);
+    }, [currentUser?.authorId]);
 
-    const fetchBooks = useCallback(async (authorId = null) => {
+    const fetchBooks = useCallback(async () => {
+        const authorId = currentUser?.authorId;
+        if (!authorId) return;
         try {
-            if (isLibrarian) {
-                // Librarian can see all books or filter by author
-                if (authorId) {
-                    const data = await bookService.getByAuthor(authorId);
-                    setAllBooks(data || []);
-                } else {
-                    const data = await bookService.getAll();
-                    setAllBooks(data || []);
-                }
-            } else if (isAuthor && currentUser?.authorId) {
-                // Author sees only their own books
-                const data = await bookService.getByAuthor(currentUser.authorId);
-                setAllBooks(data || []);
-            }
+            // Fetch only books by this author
+            const data = await bookService.getByAuthor(authorId);
+            setAllBooks(data || []);
         } catch (err) {
             console.error('Error fetching books:', err);
         }
-    }, [isLibrarian, isAuthor, currentUser?.authorId]);
+    }, [currentUser?.authorId]);
 
     useEffect(() => {
         fetchSeries();
         fetchBooks();
-        fetchAuthors();
-    }, [fetchSeries, fetchBooks, fetchAuthors]);
+    }, [fetchSeries, fetchBooks]);
 
     // ========================
     // Filtered Books
@@ -163,31 +124,18 @@ export const useSeriesManagement = () => {
         createForm.reset({
             title: '',
             description: '',
-            authorId: '',
         });
-        setSelectedAuthorId(null);
         setIsCreateModalOpen(true);
     }, [createForm]);
 
     const closeCreateModal = useCallback(() => {
         setIsCreateModalOpen(false);
-        setSelectedAuthorId(null);
     }, []);
 
     const handleCreateSeries = useCallback(async (data) => {
         setCreateLoading(true);
         try {
-            const payload = {
-                title: data.title,
-                description: data.description,
-            };
-
-            // Librarian must provide authorId
-            if (isLibrarian && data.authorId) {
-                payload.authorId = parseInt(data.authorId, 10);
-            }
-
-            await seriesService.create(payload);
+            await seriesService.create(data);
             await fetchSeries();
             closeCreateModal();
         } catch (err) {
@@ -196,7 +144,7 @@ export const useSeriesManagement = () => {
         } finally {
             setCreateLoading(false);
         }
-    }, [isLibrarian, fetchSeries, closeCreateModal]);
+    }, [fetchSeries, closeCreateModal]);
 
     // ========================
     // Edit Series
@@ -269,12 +217,6 @@ export const useSeriesManagement = () => {
         setBookSearchTerm('');
         setSeriesBooks([]);
         setIsAddBooksModalOpen(true);
-
-        // For librarian, fetch all books or the series author's books
-        if (isLibrarian && seriesItem.author?.id) {
-            await fetchBooks(seriesItem.author.id);
-        }
-
         // Fetch books in this series via GET /series/{id}/books
         try {
             const books = await seriesService.getBooks(seriesItem.id);
@@ -283,7 +225,7 @@ export const useSeriesManagement = () => {
             console.error('Error fetching series books:', err);
             setSeriesBooks([]);
         }
-    }, [isLibrarian, fetchBooks]);
+    }, []);
 
     const closeAddBooksModal = useCallback(() => {
         setIsAddBooksModalOpen(false);
@@ -329,18 +271,11 @@ export const useSeriesManagement = () => {
     return {
         // User
         currentUser,
-        isLibrarian,
-        isAuthor,
 
         // Series data
         series,
         loading,
         error,
-
-        // Authors (for librarian)
-        authors,
-        selectedAuthorId,
-        setSelectedAuthorId,
 
         // Selected series
         selectedSeries,

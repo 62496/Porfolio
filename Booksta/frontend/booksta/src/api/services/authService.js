@@ -2,7 +2,7 @@
 import axios from "axios";
 import API_ENDPOINTS from "../endpoints";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8081/api";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL ;
 
 // In-memory storage for access token (more secure than localStorage)
 let accessToken = null;

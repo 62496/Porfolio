@@ -7,7 +7,6 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import EmptyState from "../../components/common/EmptyState";
 import Button from "../../components/common/Button";
 import Toast from "../../components/common/Toast";
-import Filter from "../../components/common/Filter";
 import { useBookCatalog } from "../../features/books/hooks/useBookCatalog";
 
 export default function BookCatalog() {
@@ -17,7 +16,6 @@ export default function BookCatalog() {
     const {
         books,
         loading,
-        filterLoading,
         filteredBooks,
         handleToggleFavorite,
         isFavorite,
@@ -25,15 +23,6 @@ export default function BookCatalog() {
         hasLibrarianRole,
         toast,
         hideToast,
-        authors,
-        subjects,
-        filters,
-        updateFilter,
-        toggleArrayFilter,
-        hasActiveFilters,
-        getActiveFilterCount,
-        applyApiFilters,
-        resetApiFilters,
     } = useBookCatalog();
 
     useEffect(() => {
@@ -90,56 +79,6 @@ export default function BookCatalog() {
                         }
                     />
 
-                    <Filter
-                        filters={filters}
-                        updateFilter={updateFilter}
-                        toggleArrayFilter={toggleArrayFilter}
-                        onApply={applyApiFilters}
-                        onReset={resetApiFilters}
-                        hasActiveFilters={hasActiveFilters()}
-                        activeFilterCount={getActiveFilterCount()}
-                        loading={filterLoading}
-                        fields={[
-                            {
-                                type: 'text',
-                                name: 'title',
-                                label: 'Title',
-                                placeholder: 'Search by title...',
-                            },
-                            {
-                                type: 'range',
-                                nameMin: 'yearMin',
-                                nameMax: 'yearMax',
-                                label: 'Publication Year',
-                                min: 1000,
-                                max: new Date().getFullYear(),
-                            },
-                            {
-                                type: 'range',
-                                nameMin: 'pagesMin',
-                                nameMax: 'pagesMax',
-                                label: 'Page Count',
-                                min: 1,
-                            },
-                            {
-                                type: 'multiselect',
-                                name: 'authorIds',
-                                label: 'Authors',
-                                options: authors,
-                                getOptionLabel: (author) => `${author.firstName} ${author.lastName}`,
-                                getOptionValue: (author) => author.id,
-                            },
-                            {
-                                type: 'multiselect',
-                                name: 'subjectIds',
-                                label: 'Subjects',
-                                options: subjects,
-                                getOptionLabel: (subject) => subject.name,
-                                getOptionValue: (subject) => subject.id,
-                            },
-                        ]}
-                    />
-
                     {filteredBooks.length > 0 ? (
                         <div className="grid gap-8 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
                             {filteredBooks.map((book, i) => (
@@ -155,6 +94,7 @@ export default function BookCatalog() {
                         </div>
                     ) : (
                         <EmptyState
+                            icon="📚"
                             title="No books found"
                             description="Try adjusting your filters or search criteria"
                         />

@@ -2,10 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import bookService from "../../../api/services/bookService";
 import userService from "../../../api/services/userService";
-import authorService from "../../../api/services/authorService";
-import subjectService from "../../../api/services/subjectService";
 import useToast from "../../../hooks/useToast";
-import useFilters from "../../../hooks/useFilters";
 
 export function useBookCatalog() {
     const navigate = useNavigate();
@@ -13,17 +10,11 @@ export function useBookCatalog() {
     const [books, setBooks] = useState([]);
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filterLoading, setFilterLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [genre, setGenre] = useState("");
     const [year, setYear] = useState("");
     const [genres, setGenres] = useState([]);
     const [years, setYears] = useState([]);
-    const [authors, setAuthors] = useState([]);
-    const [subjects, setSubjects] = useState([]);
-    const [isFiltered, setIsFiltered] = useState(false);
-
-    const filterHook = useFilters();
 
     const currentUser = userService.getCurrentUser();
 
@@ -50,16 +41,9 @@ export function useBookCatalog() {
         try {
             setLoading(true);
 
-            const [booksData, authorsData, subjectsData] = await Promise.all([
-                bookService.getAllBooks(),
-                authorService.getAll(),
-                subjectService.getAll(),
-            ]);
-
+            const booksData = await bookService.getAllBooks();
             const formattedBooks = booksData.map(book => bookService.formatBookForDisplay(book));
             setBooks(formattedBooks);
-            setAuthors(authorsData || []);
-            setSubjects(subjectsData || []);
 
             const uniqueGenres = [...new Set(formattedBooks.flatMap(b =>
                 b.subjects?.map(s => s.name) || []
@@ -81,65 +65,6 @@ export function useBookCatalog() {
             setLoading(false);
         }
     }, [currentUser?.id]);
-
-    const applyApiFilters = useCallback(async () => {
-        // First, apply the current filters to appliedFilters
-        filterHook.applyFilters();
-
-        // Get the API filters from the current filters (not appliedFilters, since setState is async)
-        const apiFilters = {};
-        if (filterHook.filters.title) apiFilters.title = filterHook.filters.title;
-        if (filterHook.filters.yearMin) apiFilters.yearMin = parseInt(filterHook.filters.yearMin, 10);
-        if (filterHook.filters.yearMax) apiFilters.yearMax = parseInt(filterHook.filters.yearMax, 10);
-        if (filterHook.filters.pagesMin) apiFilters.pagesMin = parseInt(filterHook.filters.pagesMin, 10);
-        if (filterHook.filters.pagesMax) apiFilters.pagesMax = parseInt(filterHook.filters.pagesMax, 10);
-        if (filterHook.filters.authorIds?.length) apiFilters.authorIds = filterHook.filters.authorIds;
-        if (filterHook.filters.subjectIds?.length) apiFilters.subjectIds = filterHook.filters.subjectIds;
-
-        // If no filters are set, reload all books
-        if (Object.keys(apiFilters).length === 0) {
-            try {
-                setFilterLoading(true);
-                const booksData = await bookService.getAllBooks();
-                const formattedBooks = booksData.map(book => bookService.formatBookForDisplay(book));
-                setBooks(formattedBooks);
-                setIsFiltered(false);
-            } catch {
-                showToast('Error loading books', 'error');
-            } finally {
-                setFilterLoading(false);
-            }
-            return;
-        }
-
-        try {
-            setFilterLoading(true);
-            const filteredData = await bookService.filterBooks(apiFilters);
-            const formattedBooks = filteredData.map(book => bookService.formatBookForDisplay(book));
-            setBooks(formattedBooks);
-            setIsFiltered(true);
-            showToast(`Found ${formattedBooks.length} books`, 'success');
-        } catch {
-            showToast('Error applying filters', 'error');
-        } finally {
-            setFilterLoading(false);
-        }
-    }, [filterHook, showToast]);
-
-    const resetApiFilters = useCallback(async () => {
-        filterHook.resetFilters();
-        try {
-            setFilterLoading(true);
-            const booksData = await bookService.getAllBooks();
-            const formattedBooks = booksData.map(book => bookService.formatBookForDisplay(book));
-            setBooks(formattedBooks);
-            setIsFiltered(false);
-        } catch {
-            showToast('Error loading books', 'error');
-        } finally {
-            setFilterLoading(false);
-        }
-    }, [filterHook, showToast]);
 
     const handleToggleFavorite = useCallback(async (book) => {
         if (!currentUser?.id) {
@@ -189,26 +114,14 @@ export function useBookCatalog() {
         books,
         favorites,
         loading,
-        filterLoading,
         search,
         genre,
         year,
         genres,
         years,
-        authors,
-        subjects,
         filteredBooks,
         currentUser,
         toast,
-        isFiltered,
-
-        // Filter hook
-        filters: filterHook.filters,
-        appliedFilters: filterHook.appliedFilters,
-        updateFilter: filterHook.updateFilter,
-        toggleArrayFilter: filterHook.toggleArrayFilter,
-        hasActiveFilters: filterHook.hasActiveFilters,
-        getActiveFilterCount: filterHook.getActiveFilterCount,
 
         // Setters
         setSearch,
@@ -221,7 +134,5 @@ export function useBookCatalog() {
         hasAuthorRole,
         hasLibrarianRole,
         hideToast,
-        applyApiFilters,
-        resetApiFilters,
     };
 }

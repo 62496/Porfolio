@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import bookService from "../../../api/services/bookService";
 import BookThumb from "./BookThumb";
 
@@ -53,12 +52,7 @@ export default function FollowedAuthorCard({ author, onUnfollow }) {
                         className="w-16 h-16 object-cover rounded-full border-2 border-[#e5e5e7]"
                     />
                     <div>
-                        <Link
-                            to={`/authors/${author.id}`}
-                            className="text-[17px] font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors"
-                        >
-                            {author.firstName} {author.lastName}
-                        </Link>
+                        <div className="text-[17px] font-semibold text-[#1d1d1f]">{author.firstName} {author.lastName}</div>
                         <div className="text-[13px] text-[#6e6e73]">{books.length} {books.length === 1 ? 'book' : 'books'}</div>
                     </div>
                 </div>

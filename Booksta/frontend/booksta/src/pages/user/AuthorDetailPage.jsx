@@ -1,32 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Button from "../../components/common/Button";
 import FollowButton from "../../features/social/components/FollowButton";
-import DeleteAuthorModal from "../../features/authors/components/modals/DeleteAuthorModal";
-import { useAuthorDetail } from "../../features/authors/hooks/useAuthorDetail";
+import authorService from "../../api/services/authorService";
+import userService from "../../api/services/userService";
+import authService from "../../api/services/authService";
 
 export default function AuthorDetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const {
-        author,
-        loading,
-        error,
-        isFollowing,
-        isDeleteModalOpen,
-        deleteLoading,
-        hasLibrarianRole,
-        setIsFollowing,
-        handleBackToAuthors,
-        handleBookClick,
-        handleSeriesClick,
-        openDeleteModal,
-        closeDeleteModal,
-        handleDeleteAuthor,
-    } = useAuthorDetail(id);
+    const [author, setAuthor] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    const currentUser = authService.getCurrentUser();
+
+    const hasLibrarianRole = () => {
+        if (!currentUser || !currentUser.roles) return false;
+        return currentUser.roles.some(role => role.name === "LIBRARIAN");
+    };
+
+    useEffect(() => {
+        let mounted = true;
+
+        const fetchAuthor = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const data = await authorService.getById(id);
+                if (mounted) {
+                    setAuthor(data);
+                }
+            } catch (err) {
+                console.error("Error fetching author:", err);
+                if (mounted) {
+                    setError("Failed to load author details");
+                }
+            } finally {
+                if (mounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        const checkFollowStatus = async () => {
+            try {
+                const res = await userService.isFollowingAuthor(id);
+                if (mounted) setIsFollowing(Boolean(res));
+            } catch (e) {
+                console.warn("Could not get follow status", e);
+            }
+        };
+
+        fetchAuthor();
+        checkFollowStatus();
+
+        return () => {
+            mounted = false;
+        };
+    }, [id]);
+
+    const handleBackToAuthors = () => {
+        navigate("/authors");
+    };
+
+    const handleBookClick = (isbn) => {
+        navigate(`/book/${isbn}`);
+    };
+
+    const handleSeriesClick = (seriesId) => {
+        navigate(`/series/${seriesId}`);
+    };
 
     if (loading) {
         return (
@@ -114,9 +162,9 @@ export default function AuthorDetailPage() {
                     {/* Author Detail Card */}
                     <div className="bg-white rounded-[24px] border border-[#e5e5e7] overflow-hidden shadow-sm">
                         <div className="p-8 md:p-12">
-                            {/* Admin Controls - Edit and Delete (LIBRARIAN only) */}
+                            {/* Edit Button - Top Right */}
                             {hasLibrarianRole() && (
-                                <div className="flex justify-end gap-3 mb-4">
+                                <div className="flex justify-end mb-4">
                                     <Button
                                         type="secondary"
                                         onClick={() => navigate(`/authors/${id}/edit`)}
@@ -137,27 +185,6 @@ export default function AuthorDetailPage() {
                                             />
                                         </svg>
                                         Edit Author
-                                    </Button>
-                                    <Button
-                                        type="danger"
-                                        onClick={openDeleteModal}
-                                        className="!px-5 !py-2.5"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            className="w-4 h-4"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                            />
-                                        </svg>
-                                        Delete Author
                                     </Button>
                                 </div>
                             )}
@@ -348,16 +375,6 @@ export default function AuthorDetailPage() {
                     </div>
                 </div>
             </div>
-
-            {/* Delete Modal */}
-            <DeleteAuthorModal
-                isOpen={isDeleteModalOpen}
-                author={author}
-                loading={deleteLoading}
-                onConfirm={handleDeleteAuthor}
-                onClose={closeDeleteModal}
-            />
-
             <Footer />
         </div>
     );

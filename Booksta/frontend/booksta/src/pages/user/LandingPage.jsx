@@ -18,6 +18,7 @@ export default function LandingPage() {
   );
 }
 
+
 /* ---------------------------------------------------
     HERO
 ----------------------------------------------------*/
@@ -48,13 +49,14 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div
-          className={`flex justify-center gap-[16px] fade-in delay-2 ${visible ? "visible" : ""
-            }`}
+          className={`flex justify-center gap-[16px] fade-in delay-2 ${
+            visible ? "visible" : ""
+          }`}
         >
           <Button
-            label={isLoggedIn ? "Go to library" : "Get Started Free"}
+            label={isLoggedIn ? "Go to Dashboard" : "Get Started Free"}
             type="primary"
-            href={isLoggedIn ? "/books" : "/login"}
+            href={isLoggedIn ? "/my-books" : "/register"}
           />
           <Button label="Learn More" type="secondary" href="#features" />
         </div>
@@ -137,8 +139,9 @@ const Feature = ({ title, description, delay }) => {
   return (
     <div
       ref={ref}
-      className={`group bg-gradient-to-br from-white to-[#fafaf9] border-2 border-[#e5e5e7] rounded-[24px] p-[48px] text-left hover:shadow-2xl hover:border-blue-500 hover:from-blue-50 hover:to-purple-50 transition-all duration-500 stagger delay-${delay} ${v ? "visible" : ""
-        }`}
+      className={`group bg-gradient-to-br from-white to-[#fafaf9] border-2 border-[#e5e5e7] rounded-[24px] p-[48px] text-left hover:shadow-2xl hover:border-blue-500 hover:from-blue-50 hover:to-purple-50 transition-all duration-500 stagger delay-${delay} ${
+        v ? "visible" : ""
+      }`}
     >
       <div className="mb-[32px]">
         <div className="w-[60px] h-[4px] bg-gradient-to-r from-blue-500 to-purple-600 rounded-full group-hover:w-[80px] transition-all duration-300"></div>
@@ -178,8 +181,9 @@ const CitationBlock = () => {
       className="py-[120px] px-[20px] text-center bg-gradient-to-b from-[#fafaf9] via-white to-[#fafaf9]"
     >
       <div
-        className={`max-w-[900px] mx-auto fade-in ${v ? "visible" : ""
-          }`}
+        className={`max-w-[900px] mx-auto fade-in ${
+          v ? "visible" : ""
+        }`}
       >
         <div className="text-[40px] md:text-[48px] font-bold text-[#1d1d1f] mb-[24px] leading-[1.3] italic">
           "A reader lives a thousand lives before he dies... The man who never reads lives only one."
@@ -231,7 +235,7 @@ const HowItWorks = () => (
         <Button
           label="Start Your Reading Journey"
           type="primary"
-          href="/my-books"
+          href="/register"
         />
         <p className="text-[15px] text-[#86868b] mt-[16px]">
           Free forever. No credit card required.
@@ -260,8 +264,9 @@ const Step = ({ number, title, description, delay }) => {
   return (
     <div
       ref={ref}
-      className={`group relative bg-gradient-to-br from-white to-[#fafaf9] border-2 border-[#e5e5e7] rounded-[24px] p-[48px] text-left hover:shadow-2xl hover:border-blue-500 hover:from-blue-50 hover:to-purple-50 transition-all duration-500 scale-in delay-${delay} ${v ? "visible" : ""
-        }`}
+      className={`group relative bg-gradient-to-br from-white to-[#fafaf9] border-2 border-[#e5e5e7] rounded-[24px] p-[48px] text-left hover:shadow-2xl hover:border-blue-500 hover:from-blue-50 hover:to-purple-50 transition-all duration-500 scale-in delay-${delay} ${
+        v ? "visible" : ""
+      }`}
     >
       {/* Step indicator line */}
       <div className="mb-[32px]">

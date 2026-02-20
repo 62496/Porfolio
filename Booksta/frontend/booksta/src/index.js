@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || "193550132396-u21l1bka9c5036saedf7jnvmkrveoltj.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =  "405866510311-vjn4stk6h30q490486va0buue9q0v294.apps.googleusercontent.com";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

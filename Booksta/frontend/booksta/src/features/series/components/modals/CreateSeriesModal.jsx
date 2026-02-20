@@ -10,47 +10,10 @@ const CreateSeriesModal = ({
     loading,
     onSubmit,
     onClose,
-    isLibrarian = false,
-    authors = [],
 }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Create Series">
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                {/* Author Selector (Librarian only) */}
-                {isLibrarian && (
-                    <Controller
-                        name="authorId"
-                        control={form.control}
-                        render={({ field }) => (
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-[#1d1d1f] mb-2">
-                                    Author <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    {...field}
-                                    className={`w-full px-4 py-3 border rounded-xl bg-white text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0066cc] transition-all ${
-                                        form.formState.errors.authorId
-                                            ? 'border-red-500'
-                                            : 'border-[#e5e5e7]'
-                                    }`}
-                                >
-                                    <option value="">Select an author...</option>
-                                    {authors.map((author) => (
-                                        <option key={author.id} value={author.id}>
-                                            {author.firstName} {author.lastName}
-                                        </option>
-                                    ))}
-                                </select>
-                                {form.formState.errors.authorId && (
-                                    <p className="mt-1 text-sm text-red-500">
-                                        {form.formState.errors.authorId.message}
-                                    </p>
-                                )}
-                            </div>
-                        )}
-                    />
-                )}
-
                 {/* Title */}
                 <Controller
                     name="title"
@@ -75,7 +38,7 @@ const CreateSeriesModal = ({
                             type="textarea"
                             label="Description"
                             {...field}
-                            placeholder="Describe this series..."
+                            placeholder="Describe your series..."
                             rows={3}
                             maxLength={1000}
                             showCharCount

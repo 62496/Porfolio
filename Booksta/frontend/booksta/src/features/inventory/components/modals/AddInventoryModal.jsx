@@ -165,7 +165,7 @@ export default function AddInventoryModal({ isOpen, onClose, availableBooks, onA
                             </div>
                             <div>
                                 <label className="block text-[14px] font-medium text-[#1d1d1f] mb-2">
-                                    Price per Unit (€)
+                                    Price per Unit ($)
                                 </label>
                                 <input
                                     type="number"

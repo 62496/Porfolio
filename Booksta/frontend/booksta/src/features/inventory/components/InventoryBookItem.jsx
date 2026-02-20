@@ -54,7 +54,7 @@ export default function InventoryBookItem({
                 <div className="text-center min-w-[80px]">
                     <p className="text-[12px] text-[#6e6e73] uppercase tracking-wide">Price</p>
                     <p className="text-[20px] font-semibold text-[#1d1d1f]">
-                        €{item.pricePerUnit?.toFixed(2) || "0.00"}
+                        ${item.pricePerUnit?.toFixed(2) || "0.00"}
                     </p>
                 </div>
 
@@ -62,7 +62,7 @@ export default function InventoryBookItem({
                 <div className="text-center min-w-[100px]">
                     <p className="text-[12px] text-[#6e6e73] uppercase tracking-wide">Value</p>
                     <p className="text-[20px] font-semibold text-[#0071e3]">
-                        €{totalValue.toFixed(2)}
+                        ${totalValue.toFixed(2)}
                     </p>
                 </div>
 

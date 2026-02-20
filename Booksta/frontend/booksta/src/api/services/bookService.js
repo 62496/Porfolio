@@ -280,38 +280,6 @@ const bookService = {
         } catch (error) {
             throw error;
         }
-    },
-
-    /**
-     * Filter books with multiple optional criteria
-     * @param {Object} filters - Filter parameters
-     * @param {string} [filters.title] - Filter by title (partial match, case-insensitive)
-     * @param {number} [filters.yearMin] - Minimum publication year
-     * @param {number} [filters.yearMax] - Maximum publication year
-     * @param {number} [filters.pagesMin] - Minimum page count
-     * @param {number} [filters.pagesMax] - Maximum page count
-     * @param {number[]} [filters.authorIds] - Filter by author IDs
-     * @param {number[]} [filters.subjectIds] - Filter by subject IDs
-     * @returns {Promise<Array>} - Array of filtered books
-     */
-    filterBooks: async (filters = {}) => {
-        try {
-            const params = {};
-
-            if (filters.title) params.title = filters.title;
-            if (filters.yearMin) params.yearMin = filters.yearMin;
-            if (filters.yearMax) params.yearMax = filters.yearMax;
-            if (filters.pagesMin) params.pagesMin = filters.pagesMin;
-            if (filters.pagesMax) params.pagesMax = filters.pagesMax;
-            if (filters.authorIds?.length) params.authorIds = filters.authorIds.join(',');
-            if (filters.subjectIds?.length) params.subjectIds = filters.subjectIds.join(',');
-
-            const response = await apiClient.get(API_ENDPOINTS.BOOKS.FILTER, { params });
-            return response.data;
-        } catch (error) {
-            console.error('Error filtering books:', error);
-            throw error;
-        }
     }
 };
 

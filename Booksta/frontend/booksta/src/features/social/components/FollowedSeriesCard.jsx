@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import bookService from "../../../api/services/bookService";
 import BookThumb from "./BookThumb";
 
@@ -33,12 +32,7 @@ export default function FollowedSeriesCard({ series, onUnfollow }) {
         <div className="bg-white border border-[#e5e5e7] rounded-[18px] p-6 hover:shadow-lg transition-shadow duration-300">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <Link
-                        to={`/series/${series.id}`}
-                        className="text-[20px] font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors"
-                    >
-                        {series.title}
-                    </Link>
+                    <div className="text-[20px] font-semibold text-[#1d1d1f]">{series.title}</div>
                 </div>
 
                 <button

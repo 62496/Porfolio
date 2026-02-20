@@ -116,10 +116,11 @@ export default function MarketplacePage() {
                             {/* In Stock Toggle */}
                             <button
                                 onClick={() => setFilterInStock(!filterInStock)}
-                                className={`px-5 py-3 rounded-[12px] text-[14px] font-medium transition-all ${filterInStock
+                                className={`px-5 py-3 rounded-[12px] text-[14px] font-medium transition-all ${
+                                    filterInStock
                                         ? 'bg-green-500 text-white'
                                         : 'bg-white border border-[#e5e5e7] text-[#6e6e73] hover:border-[#1d1d1f]'
-                                    }`}
+                                }`}
                             >
                                 <span className="flex items-center gap-2">
                                     {filterInStock && (

@@ -14,17 +14,10 @@ import { useSeriesManagement } from '../../features/series/hooks/useSeriesManage
 
 export default function SeriesManagementPage() {
     const {
-        // User info
-        isLibrarian,
-        isAuthor,
-
         // Series data
         series,
         loading,
         error,
-
-        // Authors (for librarian)
-        authors,
 
         // Selected series
         selectedSeries,
@@ -70,17 +63,11 @@ export default function SeriesManagementPage() {
         return (
             <div className="min-h-screen bg-white font-sans text-[#1d1d1f]">
                 <Header />
-                <LoadingSpinner message="Loading series..." />
+                <LoadingSpinner message="Loading your series..." />
                 <Footer />
             </div>
         );
     }
-
-    // Page title and description based on role
-    const pageTitle = isLibrarian ? "Series Management" : "My Series";
-    const pageDescription = isLibrarian
-        ? "Manage all book series in the system"
-        : "Manage your book series";
 
     return (
         <div className="font-sans text-[#1d1d1f] bg-white min-h-screen flex flex-col">
@@ -89,8 +76,8 @@ export default function SeriesManagementPage() {
             <div className="flex-1">
                 <main className="max-w-[1200px] mx-auto py-20 px-[20px]">
                     <PageHeader
-                        title={pageTitle}
-                        description={pageDescription}
+                        title="My Series"
+                        description="Manage your book series"
                         action={
                             <Button
                                 label="Create Series"
@@ -107,13 +94,6 @@ export default function SeriesManagementPage() {
                         </div>
                     )}
 
-                    {/* Info banner for librarians */}
-                    {isLibrarian && (
-                        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
-                            As a librarian, you can manage all series. When creating a series, you must select an author.
-                        </div>
-                    )}
-
                     {/* Series Grid */}
                     {series.length > 0 ? (
                         <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
@@ -124,7 +104,6 @@ export default function SeriesManagementPage() {
                                     onEdit={openEditModal}
                                     onDelete={openDeleteModal}
                                     onAddBooks={openAddBooksModal}
-                                    showAuthor={isLibrarian}
                                     delay={i}
                                 />
                             ))}
@@ -132,10 +111,7 @@ export default function SeriesManagementPage() {
                     ) : (
                         <EmptyState
                             title="No series yet"
-                            description={isLibrarian
-                                ? "No series have been created yet"
-                                : "Create your first series to organize your books"
-                            }
+                            description="Create your first series to organize your books"
                             action={
                                 <Button
                                     label="Create Series"
@@ -157,8 +133,6 @@ export default function SeriesManagementPage() {
                 loading={createLoading}
                 onSubmit={handleCreateSeries}
                 onClose={closeCreateModal}
-                isLibrarian={isLibrarian}
-                authors={authors}
             />
 
             <EditSeriesModal

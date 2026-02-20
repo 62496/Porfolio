@@ -63,12 +63,9 @@ export default function SeriesCard({ series, initiallyFollowing = undefined }) {
       <div className="p-5 border-b border-[#e5e5e7]">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <Link
-              to={`/series/${series.id}`}
-              className="text-lg font-semibold text-[#1d1d1f] line-clamp-1 hover:text-[#0066cc] transition-colors"
-            >
+            <h3 className="text-lg font-semibold text-[#1d1d1f] line-clamp-1">
               {series.title}
-            </Link>
+            </h3>
             {series.description && (
               <p className="text-sm text-[#6e6e73] mt-1 line-clamp-2">
                 {series.description}

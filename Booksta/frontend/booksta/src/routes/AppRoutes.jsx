@@ -13,7 +13,6 @@ import BookDetailPage from "../pages/user/BookDetailPage";
 import AuthorListPage from "../pages/user/AuthorListPage";
 import AuthorDetailPage from "../pages/user/AuthorDetailPage";
 import SeriesListPage from "../pages/user/SeriesListPage";
-import SeriesDetailPage from "../pages/user/SeriesDetailPage";
 import FavoritesPage from "../pages/user/FavoritesPage";
 import ProfilePage from "../pages/user/ProfilePage";
 import BookCollectionDetailPage from "../pages/user/BookCollectionDetailPage";
@@ -70,11 +69,6 @@ export default function AppRoutes() {
             <Route path="/series" element={
                 <PrivateRoute>
                     <SeriesListPage />
-                </PrivateRoute>
-            } />
-            <Route path="/series/:id" element={
-                <PrivateRoute>
-                    <SeriesDetailPage />
                 </PrivateRoute>
             } />
             <Route path="/favorites" element={
@@ -155,7 +149,7 @@ export default function AppRoutes() {
                 </PrivateRoute>
             } />
             <Route path="/author/dashboard/series" element={
-                <PrivateRoute roles={["AUTHOR", "LIBRARIAN"]}>
+                <PrivateRoute roles={["AUTHOR"]}>
                     <SeriesManagementPage />
                 </PrivateRoute>
             } />

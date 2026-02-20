@@ -67,6 +67,7 @@ export default function AuthorList() {
 
           {authors.length === 0 ? (
             <EmptyState
+              icon="✍️"
               title="No Authors Yet"
               description="There are no authors in the library yet. Check back soon!"
               action={

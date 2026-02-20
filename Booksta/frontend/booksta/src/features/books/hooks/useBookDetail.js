@@ -15,8 +15,6 @@ export function useBookDetail(bookId) {
     const [isOwned, setIsOwned] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const currentUser = userService.getCurrentUser();
     const DESCRIPTION_PREVIEW_LENGTH = 300;
@@ -124,45 +122,9 @@ export function useBookDetail(bookId) {
         return hasLibrarianRole || (hasAuthorRole && isBookAuthor);
     }, [currentUser, book]);
 
-    const canDeleteBook = useCallback(() => {
-        if (!currentUser || !book) return false;
-
-        const hasLibrarianRole = currentUser.roles?.some(
-            (role) => role.name === "LIBRARIAN"
-        );
-        const hasAuthorRole = currentUser.roles?.some(
-            (role) => role.name === "AUTHOR"
-        );
-        const isBookAuthor = book.authors?.some(
-            (author) => author.user?.id === currentUser.id
-        );
-
-        // LIBRARIAN can delete any book, AUTHOR can delete their own books
-        return hasLibrarianRole || (hasAuthorRole && isBookAuthor);
-    }, [currentUser, book]);
-
     const openReportModal = useCallback(() => setIsReportModalOpen(true), []);
     const closeReportModal = useCallback(() => setIsReportModalOpen(false), []);
     const toggleDescription = useCallback(() => setShowFullDescription(prev => !prev), []);
-
-    const openDeleteModal = useCallback(() => setIsDeleteModalOpen(true), []);
-    const closeDeleteModal = useCallback(() => setIsDeleteModalOpen(false), []);
-
-    const handleDeleteBook = useCallback(async () => {
-        if (!book) return;
-        setDeleteLoading(true);
-        try {
-            await bookService.delete(book.isbn);
-            showToast('Book deleted successfully', 'success');
-            navigate('/books');
-        } catch (err) {
-            console.error('Error deleting book:', err);
-            showToast('Failed to delete book', 'error');
-        } finally {
-            setDeleteLoading(false);
-            setIsDeleteModalOpen(false);
-        }
-    }, [book, navigate, showToast]);
 
     return {
         // State
@@ -174,8 +136,6 @@ export function useBookDetail(bookId) {
         showFullDescription,
         isReportModalOpen,
         isCollectionModalOpen,
-        isDeleteModalOpen,
-        deleteLoading,
         currentUser,
         DESCRIPTION_PREVIEW_LENGTH,
         toast,
@@ -185,14 +145,10 @@ export function useBookDetail(bookId) {
         handleToggleOwned,
         handleBackToBooks,
         canEditBook,
-        canDeleteBook,
         openReportModal,
         closeReportModal,
         openCollectionModal,
         closeCollectionModal,
-        openDeleteModal,
-        closeDeleteModal,
-        handleDeleteBook,
         toggleDescription,
         hideToast,
     };

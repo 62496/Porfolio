@@ -94,7 +94,7 @@ export default function EditInventoryModal({ isOpen, onClose, item, onUpdate }) 
                     </div>
                     <div>
                         <label className="block text-[14px] font-medium text-[#1d1d1f] mb-2">
-                            Price per Unit (€)
+                            Price per Unit ($)
                         </label>
                         <input
                             type="number"
@@ -115,7 +115,7 @@ export default function EditInventoryModal({ isOpen, onClose, item, onUpdate }) 
                         <div className="flex justify-between items-center">
                             <span className="text-[14px] text-[#6e6e73]">Total Inventory Value</span>
                             <span className="text-[18px] font-semibold text-[#1d1d1f]">
-                                €{(parseFloat(quantity || 0) * parseFloat(pricePerUnit || 0)).toFixed(2)}
+                                ${(parseFloat(quantity || 0) * parseFloat(pricePerUnit || 0)).toFixed(2)}
                             </span>
                         </div>
                     </div>

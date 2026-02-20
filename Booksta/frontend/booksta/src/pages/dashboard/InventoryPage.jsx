@@ -98,7 +98,7 @@ export default function InventoryPage() {
                     </div>
                     <div className="bg-white rounded-[16px] p-6 border border-[#e5e5e7]">
                         <p className="text-[13px] text-[#6e6e73] uppercase tracking-wide mb-1">Total Value</p>
-                        <p className="text-[32px] font-semibold text-[#0071e3]">€{totals.totalValue.toFixed(2)}</p>
+                        <p className="text-[32px] font-semibold text-[#0071e3]">${totals.totalValue.toFixed(2)}</p>
                     </div>
                 </div>
 

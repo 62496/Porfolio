@@ -59,9 +59,9 @@ export default function Header() {
   const createItems = [
     { label: "Add Book", onClick: () => navigate("/author/dashboard/books/new"), visible: hasAuthorRole() || hasLibrarianRole() },
     { label: "Add Author", onClick: () => navigate("/author/dashboard/authors/new"), visible: hasLibrarianRole() },
-    { type: "separator", visible: hasAuthorRole() || hasLibrarianRole() },
-    { label: hasLibrarianRole() ? "Manage Series" : "My Series", onClick: () => navigate("/author/dashboard/series"), visible: hasAuthorRole() || hasLibrarianRole() },
     { label: "Manage Subjects", onClick: () => setShowSubjectModal(true), visible: hasLibrarianRole() },
+    { type: "separator", visible: hasAuthorRole() },
+    { label: "My Series", onClick: () => navigate("/author/dashboard/series"), visible: hasAuthorRole() },
   ];
 
   const showCreateMenu = (hasAuthorRole() || hasLibrarianRole()) && createItems.some(item => item.visible && item.type !== 'separator');

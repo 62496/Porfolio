@@ -6,13 +6,9 @@ const SeriesManagementCard = ({
     onEdit,
     onDelete,
     onAddBooks,
-    showAuthor = false,
     delay = 0,
 }) => {
     const bookCount = series.bookCount || 0;
-    const authorName = series.author
-        ? `${series.author.firstName} ${series.author.lastName}`
-        : null;
 
     return (
         <div
@@ -31,13 +27,6 @@ const SeriesManagementCard = ({
                         {bookCount} {bookCount === 1 ? 'book' : 'books'}
                     </span>
                 </div>
-
-                {/* Author name (shown for librarians) */}
-                {showAuthor && authorName && (
-                    <p className="text-sm text-[#0066cc] mb-2">
-                        by {authorName}
-                    </p>
-                )}
 
                 {series.description && (
                     <p className="text-sm text-[#6e6e73] line-clamp-2 mb-4">

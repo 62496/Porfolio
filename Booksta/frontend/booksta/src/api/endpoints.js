@@ -8,7 +8,6 @@ export const API_ENDPOINTS = {
         UPDATE: (id) => `/books/${id}`,
         DELETE: (id) => `/books/${id}`,
         SEARCH: '/books/search',
-        FILTER: '/books/filter',
         BY_SERIES: (seriesId) => `/books/series/${seriesId}`,
         CREATE_BOOK_READING_EVENT: (id) => `/books/${id}/read-events`,
         GET_LATEST_BOOK_READING_EVENT: (isbn) => `/books/${isbn}/read-event/latest`,
@@ -43,7 +42,6 @@ export const API_ENDPOINTS = {
         GET_BY_ID: (id) => `/authors/${id}`,
         CREATE: '/authors',
         UPDATE: (id) => `/authors/${id}`,
-        DELETE: (id) => `/authors/${id}`,
     },
 
     SUBJECTS: {

@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { useAuthors } from "../hooks/useAuthors";
 import { useSubjects } from "../hooks/useSubjects";
+import useSeries from "../hooks/useSeries";
 import GenericInput from "../../../components/forms/GenericInput";
 import AuthorSelector from "./AuthorSelector";
 import GenreSelector from "./GenreSelector";
 import ProgressSteps from "../../../components/forms/ProgressSteps";
 import { styles } from "../../../styles/styles";
+import seriesService from "../../../api/services/seriesService";
 import bookService from "../../../api/services/bookService";
 import { bookValidationSchema } from "../validations/bookSchema";
 import AuthService from "../../../api/services/authService";
@@ -20,10 +23,12 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
   const [bookImagePreview, setBookImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const hasFetched = useRef(false);
   const currentUser = AuthService.getCurrentUser();
 
-  const { authors, loading: authorsLoading, fetchAuthors } = useAuthors(false);
-  const { subjects, loading: subjectsLoading, fetchSubjects } = useSubjects(false);
+  const { authors, fetchAuthors } = useAuthors(false);
+  const { subjects, fetchSubjects } = useSubjects(false);
+  const { series, fetchSeries } = useSeries(false);
 
   const isEditMode = mode === "edit";
   const steps = ["Basic Info", "Authors", "Genres"];
@@ -55,24 +60,23 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
       description: "",
       authors: [],
       genres: [],
+      seriesId: "",
+      newSeriesTitle: "",
     },
   });
 
-  // Fetch authors when entering step 1
-  useEffect(() => {
-    if (currentStep === 1) {
-      fetchAuthors();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep]);
+  const selectedSeriesId = watch("seriesId");
 
-  // Fetch subjects when entering step 2
+  // Fetch authors, subjects, and series once
   useEffect(() => {
-    if (currentStep === 2) {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchAuthors();
       fetchSubjects();
+      fetchSeries();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep]);
+  }, []);
 
   // Populate form in edit mode
   useEffect(() => {
@@ -84,6 +88,7 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
       setValue("description", bookData.description || "");
       setValue("authors", bookData.authors?.map((a) => a.id) || []);
       setValue("genres", bookData.subjects?.map((s) => s.id) || []);
+      setValue("seriesId", bookData.series?.id || "");
 
       if (bookData.cover) {
         setBookImagePreview(bookData.cover);
@@ -148,6 +153,25 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
             authors: data.authors.map((id) => ({ id })),
             subjects: data.genres.map((id) => ({ id })),
           };
+
+      // Handle series
+      if (!isEditMode) {
+        if (data.seriesId && data.seriesId !== "__create_new__" && data.seriesId !== "") {
+          payload.series = { id: Number(data.seriesId) };
+        } else if (
+          data.seriesId === "__create_new__" &&
+          data.newSeriesTitle &&
+          data.newSeriesTitle.trim().length > 0
+        ) {
+          const createdSeries = await seriesService.create({
+            title: data.newSeriesTitle.trim(),
+          });
+          if (!createdSeries || !createdSeries.id) {
+            throw new Error("Failed to create series");
+          }
+          payload.series = { id: Number(createdSeries.id) };
+        }
+      }
 
       const formData = new FormData();
       formData.append(
@@ -327,6 +351,44 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
                 preview={bookImagePreview}
                 accept="image/*"
               />
+
+              {!isEditMode && (
+                <div style={{ marginTop: 12, marginBottom: 12 }}>
+                  <label style={{ display: "block", marginBottom: 6 }}>
+                    Series (optional)
+                  </label>
+
+                  <Controller
+                    name="seriesId"
+                    control={control}
+                    render={({ field }) => (
+                      <select {...field} className="px-3 py-2 border rounded w-full">
+                        <option value="">-- Select existing series --</option>
+                        <option value="__create_new__">+ Create new series...</option>
+                        {series.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.title}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
+
+                  {selectedSeriesId === "__create_new__" && (
+                    <Controller
+                      name="newSeriesTitle"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          placeholder="New series title"
+                          className="mt-2 px-3 py-2 border rounded w-full"
+                        />
+                      )}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -336,29 +398,23 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
               <h2 style={styles.stepTitle}>Select Authors</h2>
               <p style={styles.stepDescription}>Choose one or more authors</p>
 
-              {authorsLoading || authors.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "#666" }}>
-                  Loading authors...
-                </div>
-              ) : (
-                <Controller
-                  name="authors"
-                  control={control}
-                  rules={{ required: "At least one author is required" }}
-                  render={({ field }) => (
-                    <AuthorSelector
-                      selected={field.value}
-                      options={authors}
-                      onToggle={(author) => {
-                        const updated = field.value.includes(author)
-                          ? field.value.filter((a) => a !== author)
-                          : [...field.value, author];
-                        field.onChange(updated);
-                      }}
-                    />
-                  )}
-                />
-              )}
+              <Controller
+                name="authors"
+                control={control}
+                rules={{ required: "At least one author is required" }}
+                render={({ field }) => (
+                  <AuthorSelector
+                    selected={field.value}
+                    options={authors}
+                    onToggle={(author) => {
+                      const updated = field.value.includes(author)
+                        ? field.value.filter((a) => a !== author)
+                        : [...field.value, author];
+                      field.onChange(updated);
+                    }}
+                  />
+                )}
+              />
 
               {errors.authors && (
                 <div style={styles.errorMessage}>{errors.authors.message}</div>
@@ -372,29 +428,23 @@ export default function BookForm({ mode = "create", bookData = null, onSuccess }
               <h2 style={styles.stepTitle}>Select Genres</h2>
               <p style={styles.stepDescription}>Choose all genres that apply</p>
 
-              {subjectsLoading || subjects.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "#666" }}>
-                  Loading genres...
-                </div>
-              ) : (
-                <Controller
-                  name="genres"
-                  control={control}
-                  rules={{ required: "At least one genre is required" }}
-                  render={({ field }) => (
-                    <GenreSelector
-                      selected={field.value}
-                      options={subjects}
-                      onToggle={(genre) => {
-                        const updated = field.value.includes(genre)
-                          ? field.value.filter((g) => g !== genre)
-                          : [...field.value, genre];
-                        field.onChange(updated);
-                      }}
-                    />
-                  )}
-                />
-              )}
+              <Controller
+                name="genres"
+                control={control}
+                rules={{ required: "At least one genre is required" }}
+                render={({ field }) => (
+                  <GenreSelector
+                    selected={field.value}
+                    options={subjects}
+                    onToggle={(genre) => {
+                      const updated = field.value.includes(genre)
+                        ? field.value.filter((g) => g !== genre)
+                        : [...field.value, genre];
+                      field.onChange(updated);
+                    }}
+                  />
+                )}
+              />
 
               {errors.genres && (
                 <div style={styles.errorMessage}>{errors.genres.message}</div>

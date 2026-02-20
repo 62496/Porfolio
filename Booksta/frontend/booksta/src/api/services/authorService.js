@@ -70,21 +70,6 @@ const authorService = {
         } catch (error) {
             throw error;
         }
-    },
-
-    /**
-     * Delete an author (requires ADMIN role)
-     * Cascade: deletes all books by author, series, removes from followers
-     * @param {string|number} id - Author ID
-     * @returns {Promise} - 204 No Content on success
-     */
-    delete: async (id) => {
-        try {
-            const response = await apiClient.delete(API_ENDPOINTS.AUTHORS.DELETE(id));
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
     }
 };
 
