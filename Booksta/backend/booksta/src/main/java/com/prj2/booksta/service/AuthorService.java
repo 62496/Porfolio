@@ -14,11 +14,9 @@ import com.prj2.booksta.model.dto.AuthorDetailResponse;
 import com.prj2.booksta.model.dto.BookSummary;
 import com.prj2.booksta.repository.BookRepository;
 import com.prj2.booksta.repository.SeriesRepository;
-import com.prj2.booksta.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +35,6 @@ public class AuthorService {
     private SeriesRepository seriesRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -47,13 +42,6 @@ public class AuthorService {
 
     @Autowired
     private ImageService imageService;
-
-    @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
-    @Lazy
-    private BookService bookService;
 
     public Iterable<Author> getAllAuthors() {
         return authorRepository.findAll();}
@@ -142,54 +130,5 @@ public class AuthorService {
         response.setSeries(seriesSummaries);
 
         return response;
-    }
-
-    @Transactional
-    public void deleteAuthor(Long authorId) {
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException("Author not found: " + authorId));
-
-        // 1. Delete all books by this author (this cascades to reports, collections, etc.)
-        List<Book> books = bookRepository.findByAuthors_Id(authorId);
-        for (Book book : books) {
-            bookService.delete(book.getIsbn());
-        }
-
-        // 2. Delete all series by this author
-        // First, remove books from series (don't delete the books, they're already deleted or belong to other authors)
-        List<Series> seriesList = seriesRepository.findByAuthorId(authorId);
-        for (Series series : seriesList) {
-            for (Book book : series.getBooks()) {
-                book.setSeries(null);
-                bookRepository.save(book);
-            }
-            // Remove followers from series
-            for (User follower : series.getFollowers()) {
-                follower.getFollowedSeries().remove(series);
-                userRepository.save(follower);
-            }
-        }
-        seriesRepository.deleteByAuthorId(authorId);
-
-        // 3. Remove from followers (user_followed_authors) - don't delete the users
-        for (User follower : author.getFollowers()) {
-            follower.getFollowedAuthors().remove(author);
-            userRepository.save(follower);
-        }
-
-        // 4. Delete author image
-        if (author.getImage() != null) {
-            try {
-                fileStorageService.deleteAuthorImage(authorId);
-            } catch (Exception e) {
-                // Log but don't fail if image deletion fails
-            }
-        }
-
-        // 5. DO NOT delete the associated user - just clear the relationship
-        // The user account remains, only the author profile is deleted
-
-        // 6. Delete the author
-        authorRepository.delete(author);
     }
 }

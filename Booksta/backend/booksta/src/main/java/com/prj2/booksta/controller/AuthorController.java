@@ -105,11 +105,4 @@ public class AuthorController {
 
         return ResponseEntity.ok(authorService.save(author));
     }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('LIBRARIAN')")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-        authorService.deleteAuthor(id);
-        return ResponseEntity.noContent().build();
-    }
 }

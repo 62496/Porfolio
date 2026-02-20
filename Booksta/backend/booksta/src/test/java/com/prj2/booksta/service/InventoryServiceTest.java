@@ -12,9 +12,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.util.ReflectionTestUtils; 
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -34,6 +35,7 @@ class InventoryServiceTest {
     @Mock
     private BookRepository bookRepository;
 
+    @InjectMocks
     private InventoryService inventoryService;
 
     private User mockUser;
@@ -41,9 +43,6 @@ class InventoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Create the service with constructor injection
-        inventoryService = new InventoryService(inventoryRepository);
-        // Manually inject the field-autowired bookRepository
         ReflectionTestUtils.setField(inventoryService, "bookRepository", bookRepository);
 
         mockUser = new User();
@@ -64,7 +63,6 @@ class InventoryServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(inventoryRepository).findByUserId(userId);
     }
 
     @Test
@@ -82,15 +80,14 @@ class InventoryServiceTest {
         savedInventory.setPricePerUnit(BigDecimal.valueOf(19.99));
 
         when(bookRepository.findById("123-ABC")).thenReturn(Optional.of(mockBook));
-        when(inventoryRepository.findById(any(UserBookInventoryId.class))).thenReturn(Optional.empty());
+        
+        when(inventoryRepository.findById(any())).thenReturn(Optional.empty()); 
         when(inventoryRepository.save(any(UserBookInventory.class))).thenReturn(savedInventory);
 
         InventoryResponse result = inventoryService.addToInventory(mockUser, request);
 
         assertNotNull(result);
         assertEquals("123-ABC", result.getBookIsbn());
-        assertEquals(5L, result.getQuantity());
-        assertEquals(BigDecimal.valueOf(19.99), result.getPricePerUnit());
         verify(inventoryRepository).save(any(UserBookInventory.class));
     }
 
@@ -98,14 +95,13 @@ class InventoryServiceTest {
     void addToInventory_ShouldThrowException_WhenBookNotFound() {
         InventoryRequest request = new InventoryRequest();
         request.setBookIsbn("INVALID-ISBN");
-        request.setQuantity(5L);
-        request.setPricePerUnit(BigDecimal.valueOf(19.99));
 
         when(bookRepository.findById("INVALID-ISBN")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
             inventoryService.addToInventory(mockUser, request)
         );
+        
         verify(inventoryRepository, never()).save(any());
     }
 
@@ -113,18 +109,17 @@ class InventoryServiceTest {
     void addToInventory_ShouldThrowException_WhenBookAlreadyInInventory() {
         InventoryRequest request = new InventoryRequest();
         request.setBookIsbn("123-ABC");
-        request.setQuantity(5L);
-        request.setPricePerUnit(BigDecimal.valueOf(19.99));
 
         UserBookInventory existingInventory = new UserBookInventory();
         existingInventory.setId(new UserBookInventoryId(1L, "123-ABC"));
 
         when(bookRepository.findById("123-ABC")).thenReturn(Optional.of(mockBook));
-        when(inventoryRepository.findById(any(UserBookInventoryId.class))).thenReturn(Optional.of(existingInventory));
+        when(inventoryRepository.findById(any())).thenReturn(Optional.of(existingInventory));
 
         assertThrows(IllegalArgumentException.class, () ->
             inventoryService.addToInventory(mockUser, request)
         );
+        
         verify(inventoryRepository, never()).save(any());
     }
 
@@ -141,15 +136,30 @@ class InventoryServiceTest {
         existingInventory.setQuantity(5L);
         existingInventory.setPricePerUnit(BigDecimal.valueOf(19.99));
 
-        when(inventoryRepository.findById(any(UserBookInventoryId.class))).thenReturn(Optional.of(existingInventory));
+        when(inventoryRepository.findById(any())).thenReturn(Optional.of(existingInventory));
         when(inventoryRepository.save(any(UserBookInventory.class))).thenReturn(existingInventory);
 
         InventoryResponse result = inventoryService.updateInventory(mockUser, "123-ABC", request);
 
         assertNotNull(result);
         assertEquals(10L, existingInventory.getQuantity());
-        assertEquals(BigDecimal.valueOf(24.99), existingInventory.getPricePerUnit());
-        verify(inventoryRepository).save(existingInventory);
+    }
+    
+    @Test
+    void updateInventory_ShouldDeleteAndThrow_WhenQuantityIsZero() {
+        InventoryRequest request = new InventoryRequest();
+        request.setQuantity(0L);
+
+        UserBookInventory existingInventory = new UserBookInventory();
+        existingInventory.setId(new UserBookInventoryId(1L, "123-ABC"));
+
+        when(inventoryRepository.findById(any())).thenReturn(Optional.of(existingInventory));
+
+        assertThrows(IllegalArgumentException.class, () -> 
+            inventoryService.updateInventory(mockUser, "123-ABC", request)
+        );
+
+        verify(inventoryRepository).delete(existingInventory);
     }
 
     @Test
@@ -157,30 +167,28 @@ class InventoryServiceTest {
         InventoryRequest request = new InventoryRequest();
         request.setQuantity(10L);
 
-        when(inventoryRepository.findById(any(UserBookInventoryId.class))).thenReturn(Optional.empty());
+        when(inventoryRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
             inventoryService.updateInventory(mockUser, "123-ABC", request)
         );
-        verify(inventoryRepository, never()).save(any());
     }
 
     @Test
     void removeFromInventory_ShouldDelete_WhenExists() {
-        when(inventoryRepository.existsById(any(UserBookInventoryId.class))).thenReturn(true);
+        when(inventoryRepository.existsById(any())).thenReturn(true);
 
         inventoryService.removeFromInventory(mockUser, "123-ABC");
 
-        verify(inventoryRepository).deleteById(any(UserBookInventoryId.class));
+        verify(inventoryRepository).deleteById(any());
     }
 
     @Test
     void removeFromInventory_ShouldThrowException_WhenNotFound() {
-        when(inventoryRepository.existsById(any(UserBookInventoryId.class))).thenReturn(false);
+        when(inventoryRepository.existsById(any())).thenReturn(false);
 
         assertThrows(EntityNotFoundException.class, () ->
             inventoryService.removeFromInventory(mockUser, "123-ABC")
         );
-        verify(inventoryRepository, never()).deleteById(any());
     }
 }

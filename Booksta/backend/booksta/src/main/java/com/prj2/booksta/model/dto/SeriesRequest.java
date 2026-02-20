@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class SeriesRequest {
     private String title;
     private String description;
-    private Long authorId;  // Optional: used by librarians to specify the author
 }

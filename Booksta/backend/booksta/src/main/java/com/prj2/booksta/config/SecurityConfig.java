@@ -25,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
-    @Value("${app.cors.allowed-origins:http://localhost:3000}")
+    @Value("${app.cors.allowed-origins:https://booksta-859bc.web.app}")
     private String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationProvider jwtAuthenticationProvider) {
@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/google").permitAll()
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
+
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/books/{isbn}/reports").authenticated()
                         .requestMatchers("/api/inventory/**").hasRole("SELLER")
@@ -88,13 +89,13 @@ public class SecurityConfig {
                         .hasAnyRole("AUTHOR", "LIBRARIAN")
 
                         .requestMatchers(HttpMethod.POST, "/api/series")
-                        .hasAnyRole("AUTHOR", "LIBRARIAN")
+                        .hasRole("AUTHOR")
 
                         .requestMatchers(HttpMethod.PUT, "/api/series/**")
-                        .hasAnyRole("AUTHOR", "LIBRARIAN")
+                        .hasRole("AUTHOR")
 
                         .requestMatchers(HttpMethod.DELETE, "/api/series/**")
-                        .hasAnyRole("AUTHOR", "LIBRARIAN")
+                        .hasRole("AUTHOR")
 
                         .requestMatchers(HttpMethod.GET, "/books/my-books")
                         .hasRole("AUTHOR")

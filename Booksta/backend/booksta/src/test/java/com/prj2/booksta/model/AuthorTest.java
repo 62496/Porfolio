@@ -1,330 +1,121 @@
 package com.prj2.booksta.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-class AuthorTest {
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.constraints.NotBlank;
 
-    private Author author;
+public class AuthorTest {
+
+    private Validator validator;
 
     @BeforeEach
-    void setUp() {
-        author = new Author();
+    void setup() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
-    @Nested
-    @DisplayName("Constructor and Getter tests")
-    class ConstructorAndGetterTests {
+    @Test
+    void testConstructorAndGetters() {
+        Image image = new Image();
 
-        @Test
-        @DisplayName("Should create author with no-args constructor")
-        void testNoArgsConstructor() {
-            Author newAuthor = new Author();
+        Author author = new Author(
+                1L,
+                "John",
+                "Doe",
+                new HashSet<>(),
+                new HashSet<>(),
+                image,
+                null);
 
-            assertNull(newAuthor.getId());
-            assertNull(newAuthor.getFirstName());
-            assertNull(newAuthor.getLastName());
-            assertNotNull(newAuthor.getBooks());
-            assertTrue(newAuthor.getBooks().isEmpty());
-            assertNotNull(newAuthor.getFollowers());
-            assertTrue(newAuthor.getFollowers().isEmpty());
-            assertNull(newAuthor.getImage());
-            assertNull(newAuthor.getUser());
-        }
+        assertEquals(1L, author.getId());
+        assertEquals("John", author.getFirstName());
+        assertEquals("Doe", author.getLastName());
 
-        @Test
-        @DisplayName("Should create author with all-args constructor")
-        void testAllArgsConstructor() {
-            Set<Book> books = new HashSet<>();
-            Set<User> followers = new HashSet<>();
-            Image image = new Image("http://example.com/author.jpg");
-            User user = new User();
-            user.setId(1L);
+        assertEquals(image, author.getImage());
 
-            Author newAuthor = new Author(
-                    1L,
-                    "John",
-                    "Doe",
-                    books,
-                    followers,
-                    image,
-                    user
-            );
-
-            assertEquals(1L, newAuthor.getId());
-            assertEquals("John", newAuthor.getFirstName());
-            assertEquals("Doe", newAuthor.getLastName());
-            assertSame(books, newAuthor.getBooks());
-            assertSame(followers, newAuthor.getFollowers());
-            assertSame(image, newAuthor.getImage());
-            assertSame(user, newAuthor.getUser());
-        }
+        assertNotNull(author.getBooks());
+        assertNotNull(author.getFollowers());
+        assertTrue(author.getBooks().isEmpty());
     }
 
-    @Nested
-    @DisplayName("Setter tests")
-    class SetterTests {
-
-        @Test
-        @DisplayName("Should set and get id")
-        void testSetId() {
-            author.setId(1L);
-            assertEquals(1L, author.getId());
-        }
-
-        @Test
-        @DisplayName("Should set and get firstName")
-        void testSetFirstName() {
-            author.setFirstName("John");
-            assertEquals("John", author.getFirstName());
-        }
-
-        @Test
-        @DisplayName("Should set and get lastName")
-        void testSetLastName() {
-            author.setLastName("Doe");
-            assertEquals("Doe", author.getLastName());
-        }
-
-        @Test
-        @DisplayName("Should set and get books")
-        void testSetBooks() {
-            Set<Book> books = new HashSet<>();
-            Book book = new Book();
-            book.setIsbn("9781234567890");
-            books.add(book);
-
-            author.setBooks(books);
-
-            assertEquals(1, author.getBooks().size());
-            assertTrue(author.getBooks().contains(book));
-        }
-
-        @Test
-        @DisplayName("Should set and get followers")
-        void testSetFollowers() {
-            Set<User> followers = new HashSet<>();
-            User follower = new User();
-            follower.setId(1L);
-            followers.add(follower);
-
-            author.setFollowers(followers);
-
-            assertEquals(1, author.getFollowers().size());
-            assertTrue(author.getFollowers().contains(follower));
-        }
-
-        @Test
-        @DisplayName("Should set and get image")
-        void testSetImage() {
-            Image image = new Image("http://example.com/author.jpg");
-            author.setImage(image);
-            assertEquals(image, author.getImage());
-        }
-
-        @Test
-        @DisplayName("Should set and get user")
-        void testSetUser() {
-            User user = new User();
-            user.setId(1L);
-            user.setEmail("john@test.com");
-
-            author.setUser(user);
-
-            assertEquals(user, author.getUser());
-        }
+    @Test
+    void testDefaultCollectionsAreEmpty() {
+        Author author = new Author();
+        assertNotNull(author.getBooks());
+        assertNotNull(author.getFollowers());
+        assertTrue(author.getBooks().isEmpty());
     }
 
-    @Nested
-    @DisplayName("Equals and HashCode tests")
-    class EqualsAndHashCodeTests {
+    @Test
+    void testAddBook() {
+        Author author = new Author();
+        Book book = new Book();
 
-        @Test
-        @DisplayName("Should be equal when same id, firstName, lastName, image, user")
-        void testEquals_SameFields_ReturnsTrue() {
-            Author author1 = new Author();
-            author1.setId(1L);
-            author1.setFirstName("John");
-            author1.setLastName("Doe");
-            author1.setBooks(new HashSet<>());
-            author1.setFollowers(new HashSet<>());
+        author.getBooks().add(book);
 
-            Author author2 = new Author();
-            author2.setId(1L);
-            author2.setFirstName("John");
-            author2.setLastName("Doe");
-            author2.setBooks(null); // books excluded from equals
-            author2.setFollowers(null); // followers excluded from equals
-
-            assertEquals(author1, author2);
-        }
-
-        @Test
-        @DisplayName("Should have same hashCode when equal")
-        void testHashCode_EqualObjects_SameHashCode() {
-            Author author1 = new Author();
-            author1.setId(1L);
-            author1.setFirstName("John");
-            author1.setLastName("Doe");
-
-            Author author2 = new Author();
-            author2.setId(1L);
-            author2.setFirstName("John");
-            author2.setLastName("Doe");
-
-            assertEquals(author1.hashCode(), author2.hashCode());
-        }
-
-        @Test
-        @DisplayName("Should not be equal when different id")
-        void testEquals_DifferentId_ReturnsFalse() {
-            Author author1 = new Author();
-            author1.setId(1L);
-            author1.setFirstName("John");
-            author1.setLastName("Doe");
-
-            Author author2 = new Author();
-            author2.setId(2L);
-            author2.setFirstName("John");
-            author2.setLastName("Doe");
-
-            assertNotEquals(author1, author2);
-        }
-
-        @Test
-        @DisplayName("Should not be equal when different firstName")
-        void testEquals_DifferentFirstName_ReturnsFalse() {
-            Author author1 = new Author();
-            author1.setId(1L);
-            author1.setFirstName("John");
-            author1.setLastName("Doe");
-
-            Author author2 = new Author();
-            author2.setId(1L);
-            author2.setFirstName("Jane");
-            author2.setLastName("Doe");
-
-            assertNotEquals(author1, author2);
-        }
-
-        @Test
-        @DisplayName("Books and followers should be excluded from equals")
-        void testEquals_DifferentBooksAndFollowers_StillEqual() {
-            Set<Book> books1 = new HashSet<>();
-            Book book = new Book();
-            book.setIsbn("9781234567890");
-            books1.add(book);
-
-            Set<User> followers1 = new HashSet<>();
-            User follower = new User();
-            follower.setId(1L);
-            followers1.add(follower);
-
-            Author author1 = new Author();
-            author1.setId(1L);
-            author1.setFirstName("John");
-            author1.setLastName("Doe");
-            author1.setBooks(books1);
-            author1.setFollowers(followers1);
-
-            Author author2 = new Author();
-            author2.setId(1L);
-            author2.setFirstName("John");
-            author2.setLastName("Doe");
-            author2.setBooks(new HashSet<>()); // different books
-            author2.setFollowers(new HashSet<>()); // different followers
-
-            assertEquals(author1, author2);
-        }
+        assertEquals(1, author.getBooks().size());
+        assertTrue(author.getBooks().contains(book));
     }
 
-    @Nested
-    @DisplayName("ToString tests")
-    class ToStringTests {
+    @Test
+    void testEqualsAndHashCodeExcludesCollections() {
+        Author a1 = new Author();
+        a1.setId(1L);
+        a1.setFirstName("John");
+        a1.setLastName("Doe");
 
-        @Test
-        @DisplayName("Should not include books and followers in toString")
-        void testToString_ExcludesBooksAndFollowers() {
-            author.setId(1L);
-            author.setFirstName("John");
-            author.setLastName("Doe");
+        Author a2 = new Author();
+        a2.setId(1L);
+        a2.setFirstName("John");
+        a2.setLastName("Doe");
 
-            Set<Book> books = new HashSet<>();
-            Book book = new Book();
-            book.setIsbn("9781234567890");
-            books.add(book);
-            author.setBooks(books);
+        a2.getBooks().add(new Book());
+        a2.getFollowers().add(new User());
 
-            String toString = author.toString();
+        assertEquals(a1, a2, "Les auteurs devraient être égaux même si leurs livres/followers diffèrent");
+        assertEquals(a1.hashCode(), a2.hashCode(), "Le hashCode doit être identique");
 
-            assertTrue(toString.contains("John"));
-            assertTrue(toString.contains("Doe"));
-            assertFalse(toString.contains("books"));
-            assertFalse(toString.contains("followers"));
-        }
+        a2.setLastName("Smith");
+        assertNotEquals(a1, a2);
     }
 
-    @Nested
-    @DisplayName("Relationship management tests")
-    class RelationshipTests {
+    @Test
+    void testToStringExcludesCollections() {
+        Author author = new Author();
+        author.setId(10L);
+        author.getBooks().add(new Book());
 
-        @Test
-        @DisplayName("Should add book to author's books")
-        void testAddBook() {
-            author.setBooks(new HashSet<>());
-            Book book = new Book();
-            book.setIsbn("9781234567890");
+        String str = author.toString();
 
-            author.getBooks().add(book);
+        assertTrue(str.contains("10"));
+        assertFalse(str.contains("books="));
+        assertFalse(str.contains("followers="));
+    }
 
-            assertEquals(1, author.getBooks().size());
-            assertTrue(author.getBooks().contains(book));
-        }
+    @Test
+    void testNotBlankValidation() {
+        Author author = new Author();
+        author.setFirstName("");
+        author.setLastName("");
 
-        @Test
-        @DisplayName("Should remove book from author's books")
-        void testRemoveBook() {
-            author.setBooks(new HashSet<>());
-            Book book = new Book();
-            book.setIsbn("9781234567890");
-            author.getBooks().add(book);
+        Set<ConstraintViolation<Author>> violations = validator.validate(author);
 
-            author.getBooks().remove(book);
+        assertEquals(2, violations.size());
 
-            assertTrue(author.getBooks().isEmpty());
-        }
-
-        @Test
-        @DisplayName("Should add follower to author")
-        void testAddFollower() {
-            author.setFollowers(new HashSet<>());
-            User follower = new User();
-            follower.setId(1L);
-
-            author.getFollowers().add(follower);
-
-            assertEquals(1, author.getFollowers().size());
-            assertTrue(author.getFollowers().contains(follower));
-        }
-
-        @Test
-        @DisplayName("Should remove follower from author")
-        void testRemoveFollower() {
-            author.setFollowers(new HashSet<>());
-            User follower = new User();
-            follower.setId(1L);
-            author.getFollowers().add(follower);
-
-            author.getFollowers().remove(follower);
-
-            assertTrue(author.getFollowers().isEmpty());
+        for (ConstraintViolation<Author> violation : violations) {
+            String field = violation.getPropertyPath().toString();
+            assertTrue(field.equals("firstName") || field.equals("lastName"));
+            assertEquals(NotBlank.class, violation.getConstraintDescriptor().getAnnotation().annotationType());
         }
     }
 }

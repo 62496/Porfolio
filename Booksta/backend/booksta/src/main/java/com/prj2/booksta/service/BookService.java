@@ -1,20 +1,21 @@
 package com.prj2.booksta.service;
 
-import com.prj2.booksta.model.*;
-import com.prj2.booksta.model.dto.BookFilterRequest;
+import com.prj2.booksta.model.Author;
+import com.prj2.booksta.model.Book;
+import com.prj2.booksta.model.Image;
+import com.prj2.booksta.model.Subject;
 import com.prj2.booksta.model.dto.UpdateBook;
-import com.prj2.booksta.repository.*;
-import static com.prj2.booksta.repository.BookSpecification.withFilters;
+import com.prj2.booksta.repository.BookRepository;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -35,27 +36,6 @@ public class BookService {
     @Autowired
     private AuthorService authorService;
 
-    @Autowired
-    private BookReportRepository bookReportRepository;
-
-    @Autowired
-    private BookReadEventRepository bookReadEventRepository;
-
-    @Autowired
-    private ReadingSessionRepository readingSessionRepository;
-
-    @Autowired
-    private ReadingProgressRepository readingProgressRepository;
-
-    @Autowired
-    private UserBookInventoryRepository userBookInventoryRepository;
-
-    @Autowired
-    private BookCollectionRepository bookCollectionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
     public List<Book> getAllBooks() {
         return (List<Book>) bookRepository.findAll();
     }
@@ -69,77 +49,12 @@ public class BookService {
         return bookRepository.searchBooks(title, authorName, subjectName, year);
     }
 
-    public List<Book> filterBooks(BookFilterRequest filter) {
-        return bookRepository.findAll(withFilters(filter));
-    }
-
     public Book save(Book book) {
         return bookRepository.save(book);
     }
 
-    @Transactional
-    public void delete(String isbn) {
-        Book book = bookRepository.findById(isbn)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found: " + isbn));
-
-        // 1. Delete book reports targeting this book
-        bookReportRepository.deleteByBook_Isbn(isbn);
-
-        // 2. Delete reading events
-        bookReadEventRepository.deleteByBook_Isbn(isbn);
-
-        // 3. Delete reading sessions
-        readingSessionRepository.deleteByBook_Isbn(isbn);
-
-        // 4. Delete reading progress
-        readingProgressRepository.deleteByBook_Isbn(isbn);
-
-        // 5. Delete inventory entries
-        userBookInventoryRepository.deleteByBook_Isbn(isbn);
-
-        // 6. Remove book from all collections
-        List<BookCollection> collections = bookCollectionRepository.findByBooksIsbn(isbn);
-        for (BookCollection collection : collections) {
-            collection.getBooks().remove(book);
-            bookCollectionRepository.save(collection);
-        }
-
-        // 7. Remove book from user favorites and owned books
-        List<User> allUsers = userRepository.findAll();
-        for (User user : allUsers) {
-            boolean modified = false;
-            if (user.getFavoriteList().remove(book)) {
-                modified = true;
-            }
-            if (user.getOwnedBooks().remove(book)) {
-                modified = true;
-            }
-            if (modified) {
-                userRepository.save(user);
-            }
-        }
-
-        // 8. Remove from series (don't delete the series)
-        if (book.getSeries() != null) {
-            book.setSeries(null);
-        }
-
-        // 9. Clear author and subject associations (don't delete them)
-        book.getAuthors().clear();
-        book.getSubjects().clear();
-        bookRepository.save(book);
-
-        // 10. Delete image if exists
-        if (book.getImage() != null) {
-            try {
-                fileStorageService.deleteBookImage(isbn);
-            } catch (Exception e) {
-                // Log but don't fail if image deletion fails
-            }
-        }
-
-        // 11. Delete the book
-        bookRepository.delete(book);
+    public void delete(String bookId) {
+        bookRepository.deleteById(bookId);
     }
 
     public List<Book> findBySeriesId(Long seriesId) {

@@ -29,7 +29,4 @@ public interface BookCollectionRepository extends JpaRepository<BookCollection, 
            "WHERE bc.id = :collectionId AND " +
            "(bc.visibility = 'PUBLIC' OR bc.owner.id = :userId OR :userId IN (SELECT u.id FROM bc.sharedWith u))")
     boolean canUserAccess(@Param("collectionId") Long collectionId, @Param("userId") Long userId);
-
-    @Query("SELECT bc FROM BookCollection bc JOIN bc.books b WHERE b.isbn = :isbn")
-    List<BookCollection> findByBooksIsbn(@Param("isbn") String isbn);
 }

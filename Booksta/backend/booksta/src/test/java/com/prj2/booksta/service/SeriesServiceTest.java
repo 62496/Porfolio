@@ -1,7 +1,30 @@
 package com.prj2.booksta.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import com.prj2.booksta.model.Author;
 import com.prj2.booksta.model.Book;
+import com.prj2.booksta.model.Image;
 import com.prj2.booksta.model.Series;
 import com.prj2.booksta.model.User;
 import com.prj2.booksta.model.dto.BookSummary;
@@ -11,28 +34,6 @@ import com.prj2.booksta.repository.AuthorRepository;
 import com.prj2.booksta.repository.BookRepository;
 import com.prj2.booksta.repository.SeriesRepository;
 import com.prj2.booksta.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SeriesServiceTest {
@@ -52,385 +53,344 @@ class SeriesServiceTest {
     @InjectMocks
     private SeriesService seriesService;
 
-    private Series testSeries;
-    private Author testAuthor;
-    private User testUser;
-    private Book testBook;
+    @Mock
+    private SecurityContext securityContext;
+    @Mock
+    private Authentication authentication;
+    @Mock
+    private UserDetails userDetails;
+
+    private User user;
+    private Author author;
+    private Series series;
+    private Book book;
 
     @BeforeEach
     void setUp() {
-        testUser = new User();
-        testUser.setId(1L);
-        testUser.setEmail("author@test.com");
-        testUser.setFirstName("John");
-        testUser.setLastName("Doe");
+        user = new User();
+        user.setId(1L);
+        user.setEmail("test@test.com");
 
-        testAuthor = new Author();
-        testAuthor.setId(1L);
-        testAuthor.setFirstName("John");
-        testAuthor.setLastName("Doe");
-        testAuthor.setUser(testUser);
-        testAuthor.setFollowers(new HashSet<>());
+        author = new Author();
+        author.setId(10L);
+        author.setUser(user);
+        author.setFirstName("John");
+        author.setLastName("Doe");
+        author.setImage(new Image("http://img.com"));
 
-        testSeries = new Series();
-        testSeries.setId(1L);
-        testSeries.setTitle("Test Series");
-        testSeries.setDescription("A test series description");
-        testSeries.setAuthor(testAuthor);
-        testSeries.setBooks(new LinkedHashSet<>());
-        testSeries.setFollowers(new HashSet<>());
+        series = new Series();
+        series.setId(100L);
+        series.setTitle("Harry Potter");
+        series.setDescription("Description");
+        series.setAuthor(author);
+        series.setBooks(new LinkedHashSet<>());
+        series.setFollowers(new HashSet<>());
 
-        testBook = new Book();
-        testBook.setIsbn("9781234567890");
-        testBook.setTitle("Test Book");
-        testBook.setPublishingYear(2023);
+        book = new Book();
+        book.setIsbn("12345");
+        book.setTitle("Sorcerer's Stone");
+        book.setPublishingYear(1997);
+        book.setImage(new Image("http://book.img"));
+        book.setSeries(series);
     }
 
-    private void mockSecurityContext(String email, String... roles) {
-        UserDetails userDetails = mock(UserDetails.class);
-        lenient().when(userDetails.getUsername()).thenReturn(email);
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
 
-        Authentication authentication = mock(Authentication.class);
-        lenient().when(authentication.getPrincipal()).thenReturn(userDetails);
-
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-        }
-        lenient().doReturn(authorities).when(authentication).getAuthorities();
-
-        SecurityContext securityContext = mock(SecurityContext.class);
+    private void mockSecurityContext() {
         lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
+        lenient().when(authentication.getPrincipal()).thenReturn(userDetails);
+        lenient().when(userDetails.getUsername()).thenReturn(user.getEmail());
+        lenient().when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
     }
 
-    @Nested
-    @DisplayName("getAllSeries tests")
-    class GetAllSeriesTests {
-
-        @Test
-        @DisplayName("Should return all series")
-        void getAllSeries_SeriesExist_ReturnsAllSeries() {
-            Series series2 = new Series();
-            series2.setId(2L);
-            series2.setTitle("Another Series");
-            series2.setAuthor(testAuthor);
-            series2.setBooks(new LinkedHashSet<>());
-            series2.setFollowers(new HashSet<>());
-
-            when(seriesRepository.findAll()).thenReturn(Arrays.asList(testSeries, series2));
-
-            List<SeriesResponse> result = seriesService.getAllSeries();
-
-            assertEquals(2, result.size());
-            verify(seriesRepository).findAll();
-        }
-
-        @Test
-        @DisplayName("Should return empty list when no series exist")
-        void getAllSeries_NoSeriesExist_ReturnsEmptyList() {
-            when(seriesRepository.findAll()).thenReturn(Collections.emptyList());
-
-            List<SeriesResponse> result = seriesService.getAllSeries();
-
-            assertTrue(result.isEmpty());
-        }
+    @Test
+    void testGetAllSeries() {
+        when(seriesRepository.findAll()).thenReturn(Arrays.asList(series));
+        List<SeriesResponse> responses = seriesService.getAllSeries();
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).getTitle()).isEqualTo("Harry Potter");
+        assertThat(responses.get(0).getAuthor().getImageUrl()).isEqualTo("http://img.com");
     }
 
-    @Nested
-    @DisplayName("getSeriesByAuthorId tests")
-    class GetSeriesByAuthorIdTests {
-
-        @Test
-        @DisplayName("Should return series for author")
-        void getSeriesByAuthorId_SeriesExist_ReturnsSeries() {
-            when(seriesRepository.findByAuthorId(1L)).thenReturn(List.of(testSeries));
-
-            List<SeriesResponse> result = seriesService.getSeriesByAuthorId(1L);
-
-            assertEquals(1, result.size());
-            assertEquals("Test Series", result.get(0).getTitle());
-        }
-
-        @Test
-        @DisplayName("Should return empty list when author has no series")
-        void getSeriesByAuthorId_NoSeries_ReturnsEmptyList() {
-            when(seriesRepository.findByAuthorId(1L)).thenReturn(Collections.emptyList());
-
-            List<SeriesResponse> result = seriesService.getSeriesByAuthorId(1L);
-
-            assertTrue(result.isEmpty());
-        }
+    @Test
+    void testGetSeriesByAuthorId() {
+        when(seriesRepository.findByAuthorId(10L)).thenReturn(Arrays.asList(series));
+        List<SeriesResponse> responses = seriesService.getSeriesByAuthorId(10L);
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).getId()).isEqualTo(100L);
     }
 
-    @Nested
-    @DisplayName("getSeriesById tests")
-    class GetSeriesByIdTests {
-
-        @Test
-        @DisplayName("Should return series when found")
-        void getSeriesById_SeriesExists_ReturnsSeries() {
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-
-            SeriesResponse result = seriesService.getSeriesById(1L);
-
-            assertNotNull(result);
-            assertEquals("Test Series", result.getTitle());
-        }
-
-        @Test
-        @DisplayName("Should throw exception when series not found")
-        void getSeriesById_SeriesNotFound_ThrowsException() {
-            when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
-
-            assertThrows(EntityNotFoundException.class, () -> seriesService.getSeriesById(999L));
-        }
+    @Test
+    void testGetSeriesById_Success() {
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        SeriesResponse response = seriesService.getSeriesById(100L);
+        assertThat(response.getTitle()).isEqualTo("Harry Potter");
     }
 
-    @Nested
-    @DisplayName("createSeries tests")
-    class CreateSeriesTests {
-
-        @Test
-        @DisplayName("Author should create series successfully")
-        void createSeries_AsAuthor_CreatesSeriesSuccessfully() {
-            mockSecurityContext("author@test.com", "AUTHOR");
-
-            SeriesRequest request = new SeriesRequest();
-            request.setTitle("New Series");
-            request.setDescription("New series description");
-
-            when(userRepository.findByEmail("author@test.com")).thenReturn(Optional.of(testUser));
-            when(authorRepository.findByUser(testUser)).thenReturn(Optional.of(testAuthor));
-            when(seriesRepository.save(any(Series.class))).thenAnswer(invocation -> {
-                Series s = invocation.getArgument(0);
-                s.setId(2L);
-                return s;
-            });
-
-            SeriesResponse result = seriesService.createSeries(request);
-
-            assertNotNull(result);
-            assertEquals("New Series", result.getTitle());
-            verify(seriesRepository).save(any(Series.class));
-        }
-
-        @Test
-        @DisplayName("Librarian should create series with authorId")
-        void createSeries_AsLibrarianWithAuthorId_CreatesSeriesSuccessfully() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
-
-            SeriesRequest request = new SeriesRequest();
-            request.setTitle("New Series");
-            request.setDescription("New series description");
-            request.setAuthorId(1L);
-
-            when(authorRepository.findById(1L)).thenReturn(Optional.of(testAuthor));
-            when(seriesRepository.save(any(Series.class))).thenAnswer(invocation -> {
-                Series s = invocation.getArgument(0);
-                s.setId(2L);
-                s.setAuthor(testAuthor);
-                return s;
-            });
-
-            SeriesResponse result = seriesService.createSeries(request);
-
-            assertNotNull(result);
-            assertEquals("New Series", result.getTitle());
-            verify(authorRepository).findById(1L);
-        }
+    @Test
+    void testGetSeriesById_NotFound() {
+        when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> seriesService.getSeriesById(999L));
     }
 
-    @Nested
-    @DisplayName("deleteSeries tests")
-    class DeleteSeriesTests {
+    @Test
+    void testGetSeriesById_NullListsAndAuthor() {
+        Series emptySeries = new Series();
+        emptySeries.setId(200L);
+        emptySeries.setTitle("Empty");
+        
+        when(seriesRepository.findById(200L)).thenReturn(Optional.of(emptySeries));
 
-        @Test
-        @DisplayName("Author should delete own series")
-        void deleteSeries_AsOwner_DeletesSuccessfully() {
-            mockSecurityContext("author@test.com", "AUTHOR");
-
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-            when(userRepository.findByEmail("author@test.com")).thenReturn(Optional.of(testUser));
-            when(authorRepository.findByUser(testUser)).thenReturn(Optional.of(testAuthor));
-
-            seriesService.deleteSeries(1L);
-
-            verify(seriesRepository).delete(testSeries);
-        }
-
-        @Test
-        @DisplayName("Librarian should delete any series")
-        void deleteSeries_AsLibrarian_DeletesSuccessfully() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
-
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-
-            seriesService.deleteSeries(1L);
-
-            verify(seriesRepository).delete(testSeries);
-        }
-
-        @Test
-        @DisplayName("Should throw exception when series not found")
-        void deleteSeries_SeriesNotFound_ThrowsException() {
-            mockSecurityContext("author@test.com", "AUTHOR");
-
-            when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
-
-            assertThrows(EntityNotFoundException.class, () -> seriesService.deleteSeries(999L));
-        }
-
-        @Test
-        @DisplayName("Should remove books from series before deleting")
-        void deleteSeries_WithBooks_RemovesBooksFirst() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
-
-            testBook.setSeries(testSeries);
-            testSeries.getBooks().add(testBook);
-
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-
-            seriesService.deleteSeries(1L);
-
-            verify(bookRepository).save(testBook);
-            assertNull(testBook.getSeries());
-            verify(seriesRepository).delete(testSeries);
-        }
+        SeriesResponse response = seriesService.getSeriesById(200L);
+        
+        assertThat(response.getBookCount()).isZero();
+        assertThat(response.getFollowerCount()).isZero();
+        assertThat(response.getAuthor()).isNull();
     }
 
-    @Nested
-    @DisplayName("addBookToSeries tests")
-    class AddBookToSeriesTests {
+    @Test
+    void testCreateSeries_Success() {
+        mockSecurityContext();
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(seriesRepository.save(any(Series.class))).thenReturn(series);
 
-        @Test
-        @DisplayName("Should add book to series successfully")
-        void addBookToSeries_ValidRequest_AddsBook() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
+        SeriesRequest request = new SeriesRequest();
+        request.setTitle("Harry Potter");
+        request.setDescription("Magic world");
 
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-            when(bookRepository.findById("9781234567890")).thenReturn(Optional.of(testBook));
+        SeriesResponse response = seriesService.createSeries(request);
 
-            seriesService.addBookToSeries(1L, "9781234567890");
-
-            verify(bookRepository).save(testBook);
-            assertEquals(testSeries, testBook.getSeries());
-        }
-
-        @Test
-        @DisplayName("Should throw exception when series not found")
-        void addBookToSeries_SeriesNotFound_ThrowsException() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
-
-            when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
-
-            assertThrows(EntityNotFoundException.class,
-                    () -> seriesService.addBookToSeries(999L, "9781234567890"));
-        }
-
-        @Test
-        @DisplayName("Should throw exception when book not found")
-        void addBookToSeries_BookNotFound_ThrowsException() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
-
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-            when(bookRepository.findById("nonexistent")).thenReturn(Optional.empty());
-
-            assertThrows(EntityNotFoundException.class,
-                    () -> seriesService.addBookToSeries(1L, "nonexistent"));
-        }
+        assertThat(response).isNotNull();
+        assertThat(response.getTitle()).isEqualTo("Harry Potter");
+        verify(seriesRepository).save(any(Series.class));
     }
 
-    @Nested
-    @DisplayName("removeBookFromSeries tests")
-    class RemoveBookFromSeriesTests {
+    @Test
+    void testCreateSeries_UserNotAuthor() {
+        mockSecurityContext();
+        when(authorRepository.findByUser(user)).thenReturn(Optional.empty());
 
-        @Test
-        @DisplayName("Should remove book from series successfully")
-        void removeBookFromSeries_ValidRequest_RemovesBook() {
-            mockSecurityContext("librarian@test.com", "LIBRARIAN");
+        SeriesRequest request = new SeriesRequest();
+        request.setTitle("Fail");
 
-            testBook.setSeries(testSeries);
-            testSeries.getBooks().add(testBook);
-
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-            when(bookRepository.findById("9781234567890")).thenReturn(Optional.of(testBook));
-
-            seriesService.removeBookFromSeries(1L, "9781234567890");
-
-            verify(bookRepository).save(testBook);
-            assertNull(testBook.getSeries());
-        }
+        assertThrows(AccessDeniedException.class, () -> seriesService.createSeries(request));
     }
 
-    @Nested
-    @DisplayName("getSeriesBooks tests")
-    class GetSeriesBooksTests {
+    @Test
+    void testUpdateSeries_Success_AllFields() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(seriesRepository.save(any(Series.class))).thenReturn(series);
 
-        @Test
-        @DisplayName("Should return books in series")
-        void getSeriesBooks_BooksExist_ReturnsBooks() {
-            testSeries.getBooks().add(testBook);
+        SeriesRequest request = new SeriesRequest();
+        request.setTitle("Updated Title");
+        request.setDescription("Updated Desc");
 
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
+        SeriesResponse response = seriesService.updateSeries(100L, request);
 
-            List<BookSummary> result = seriesService.getSeriesBooks(1L);
-
-            assertEquals(1, result.size());
-            assertEquals("Test Book", result.get(0).getTitle());
-        }
-
-        @Test
-        @DisplayName("Should return empty list when no books in series")
-        void getSeriesBooks_NoBooksInSeries_ReturnsEmptyList() {
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
-
-            List<BookSummary> result = seriesService.getSeriesBooks(1L);
-
-            assertTrue(result.isEmpty());
-        }
+        assertThat(response).isNotNull();
+        verify(seriesRepository).save(series);
+        assertThat(series.getTitle()).isEqualTo("Updated Title");
+        assertThat(series.getDescription()).isEqualTo("Updated Desc");
     }
 
-    @Nested
-    @DisplayName("isAuthorOfSeries tests")
-    class IsAuthorOfSeriesTests {
+    @Test
+    void testUpdateSeries_Success_PartialUpdate() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(seriesRepository.save(any(Series.class))).thenReturn(series);
 
-        @Test
-        @DisplayName("Should return true when user is author of series")
-        void isAuthorOfSeries_UserIsAuthor_ReturnsTrue() {
-            when(userRepository.findByEmail("author@test.com")).thenReturn(Optional.of(testUser));
-            when(authorRepository.findByUser(testUser)).thenReturn(Optional.of(testAuthor));
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
+        SeriesRequest request = new SeriesRequest();
+        request.setDescription("Only Desc Updated");
 
-            boolean result = seriesService.isAuthorOfSeries("author@test.com", 1L);
+        seriesService.updateSeries(100L, request);
 
-            assertTrue(result);
-        }
+        assertThat(series.getTitle()).isEqualTo("Harry Potter"); 
+        assertThat(series.getDescription()).isEqualTo("Only Desc Updated");
+    }
 
-        @Test
-        @DisplayName("Should return false when user is not author of series")
-        void isAuthorOfSeries_UserIsNotAuthor_ReturnsFalse() {
-            Author anotherAuthor = new Author();
-            anotherAuthor.setId(2L);
-            testSeries.setAuthor(anotherAuthor);
+    @Test
+    void testUpdateSeries_NotFound() {
+        when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
+        SeriesRequest request = new SeriesRequest();
+        assertThrows(EntityNotFoundException.class, () -> seriesService.updateSeries(999L, request));
+    }
 
-            when(userRepository.findByEmail("author@test.com")).thenReturn(Optional.of(testUser));
-            when(authorRepository.findByUser(testUser)).thenReturn(Optional.of(testAuthor));
-            when(seriesRepository.findById(1L)).thenReturn(Optional.of(testSeries));
+    @Test
+    void testUpdateSeries_NotOwner() {
+        mockSecurityContext();
+        Author otherAuthor = new Author();
+        otherAuthor.setId(99L);
+        series.setAuthor(otherAuthor);
 
-            boolean result = seriesService.isAuthorOfSeries("author@test.com", 1L);
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
 
-            assertFalse(result);
-        }
+        SeriesRequest request = new SeriesRequest();
+        assertThrows(AccessDeniedException.class, () -> seriesService.updateSeries(100L, request));
+    }
 
-        @Test
-        @DisplayName("Should return false when user not found")
-        void isAuthorOfSeries_UserNotFound_ReturnsFalse() {
-            when(userRepository.findByEmail("unknown@test.com")).thenReturn(Optional.empty());
+    @Test
+    void testUpdateSeries_SeriesAuthorNull() {
+        mockSecurityContext();
+        series.setAuthor(null);
 
-            boolean result = seriesService.isAuthorOfSeries("unknown@test.com", 1L);
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
 
-            assertFalse(result);
-        }
+        SeriesRequest request = new SeriesRequest();
+        assertThrows(AccessDeniedException.class, () -> seriesService.updateSeries(100L, request));
+    }
+
+    @Test
+    void testDeleteSeries_Success() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+
+        series.getBooks().add(book);
+        seriesService.deleteSeries(100L);
+
+        assertThat(book.getSeries()).isNull();
+        verify(bookRepository).save(book);
+        verify(seriesRepository).delete(series);
+    }
+
+    @Test
+    void testDeleteSeries_NotFound() {
+        when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> seriesService.deleteSeries(999L));
+    }
+
+    @Test
+    void testAddBookToSeries_Success() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(bookRepository.findById("12345")).thenReturn(Optional.of(book));
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+
+        seriesService.addBookToSeries(100L, "12345");
+
+        verify(bookRepository).save(book);
+        assertThat(book.getSeries()).isEqualTo(series);
+    }
+
+    @Test
+    void testAddBookToSeries_BookNotFound() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(bookRepository.findById("999")).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> seriesService.addBookToSeries(100L, "999"));
+    }
+
+    @Test
+    void testRemoveBookFromSeries_Success() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(bookRepository.findById("12345")).thenReturn(Optional.of(book));
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+
+        book.setSeries(series);
+        seriesService.removeBookFromSeries(100L, "12345");
+
+        verify(bookRepository).save(book);
+        assertThat(book.getSeries()).isNull();
+    }
+
+    @Test
+    void testRemoveBookFromSeries_BookNotLinked() {
+        mockSecurityContext();
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(bookRepository.findById("12345")).thenReturn(Optional.of(book));
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+
+        Series otherSeries = new Series();
+        otherSeries.setId(200L);
+        book.setSeries(otherSeries);
+
+        seriesService.removeBookFromSeries(100L, "12345");
+
+        verify(bookRepository, never()).save(book);
+        assertThat(book.getSeries()).isEqualTo(otherSeries);
+    }
+
+    @Test
+    void testGetSeriesBooks() {
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        series.getBooks().add(book);
+
+        List<BookSummary> books = seriesService.getSeriesBooks(100L);
+
+        assertThat(books).hasSize(1);
+        assertThat(books.get(0).getTitle()).isEqualTo("Sorcerer's Stone");
+        assertThat(books.get(0).getImageUrl()).isEqualTo("http://book.img");
+    }
+
+    @Test
+    void testIsAuthorOfSeries_True() {
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+
+        boolean result = seriesService.isAuthorOfSeries("test@test.com", 100L);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void testIsAuthorOfSeries_UserNotFound() {
+        when(userRepository.findByEmail("unknown")).thenReturn(Optional.empty());
+        boolean result = seriesService.isAuthorOfSeries("unknown", 100L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void testIsAuthorOfSeries_AuthorNotFound() {
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.empty());
+        boolean result = seriesService.isAuthorOfSeries("test@test.com", 100L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void testIsAuthorOfSeries_SeriesNotFound() {
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        when(seriesRepository.findById(999L)).thenReturn(Optional.empty());
+        boolean result = seriesService.isAuthorOfSeries("test@test.com", 999L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void testIsAuthorOfSeries_SeriesNoAuthor() {
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(authorRepository.findByUser(user)).thenReturn(Optional.of(author));
+        series.setAuthor(null);
+        when(seriesRepository.findById(100L)).thenReturn(Optional.of(series));
+        
+        boolean result = seriesService.isAuthorOfSeries("test@test.com", 100L);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void testGetAuthenticatedUser_NotFound() {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getUsername()).thenReturn("unknown@email.com");
+        when(userRepository.findByEmail("unknown@email.com")).thenReturn(Optional.empty());
+
+        SeriesRequest req = new SeriesRequest();
+        assertThrows(UsernameNotFoundException.class, () -> seriesService.createSeries(req));
     }
 }

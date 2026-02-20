@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface ReadingSessionRepository extends JpaRepository<ReadingSession, Long> {
     List<ReadingSession> findByUserAndBookIsbn(User user, String isbn);
-
-    void deleteByBook_Isbn(String isbn);
 }

@@ -10,7 +10,6 @@ import com.prj2.booksta.model.dto.BookReadingEvent;
 import com.prj2.booksta.model.dto.BookWithLatestReadingEvent;
 import com.prj2.booksta.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +22,8 @@ public class UserService {
     @Autowired private SeriesRepository seriesRepository;
     @Autowired private AuthorRepository authorRepository;
     @Autowired private RoleRepository roleRepository;
-    @Autowired private ImageRepository imageRepository;
-    @Autowired private UserBookInventoryRepository userBookInventoryRepository;
-    @Autowired @Lazy private AuthorService authorService;
+    @Autowired
+    private ImageRepository imageRepository;
 
     private User getUserOrThrow(Long userId) {
         return userRepository.findById(userId)
@@ -224,6 +222,10 @@ public class UserService {
 
                                     // Assign USER role to all new users
                                     Role userRole = roleRepository.findByName("USER");
+                                    Role authorRole = roleRepository.findByName("AUTHOR");
+                                    Role librarianRole = roleRepository.findByName("LIBRARIAN");
+                                    Role sellerRole = roleRepository.findByName("SELLER");
+                                    
                                     if (userRole != null) {
                                         newUser.getRoles().add(userRole);
                                     }
@@ -233,6 +235,9 @@ public class UserService {
                                         Role adminRole = roleRepository.findByName("ADMIN");
                                         if (adminRole != null) {
                                             newUser.getRoles().add(adminRole);
+                                            newUser.getRoles().add(authorRole);
+                                            newUser.getRoles().add(librarianRole);
+                                            newUser.getRoles().add(sellerRole);
                                         }
                                     }
 
@@ -355,19 +360,15 @@ public class UserService {
         }
 
         if (role.getName().equals("AUTHOR")) {
-            // Check if author already exists for this user
-            Author existingAuthor = authorRepository.findByUser_Id(userId);
-            if (existingAuthor == null) {
-                Author author = new Author();
-                author.setUser(user);
-                author.setFirstName(user.getFirstName());
-                author.setLastName(user.getLastName());
-                Image image = new Image();
-                image.setUrl(user.getPicture());
-                imageRepository.save(image);
-                author.setImage(image);
-                authorRepository.save(author);
-            }
+            Author author = new Author();
+            author.setUser(user);
+            author.setFirstName(user.getFirstName());
+            author.setLastName(user.getLastName());
+            Image image = new Image();
+            image.setUrl(user.getPicture());
+            imageRepository.save(image);
+            author.setImage(image);
+            authorRepository.save(author);
         }
 
         user.getRoles().add(role);
@@ -382,19 +383,6 @@ public class UserService {
 
         if (!removed) {
             throw new IllegalArgumentException("User does not have role: " + roleName);
-        }
-
-        // If removing AUTHOR role, also delete the Author entity with full cascade
-        if (roleName.equals("AUTHOR")) {
-            Author author = authorRepository.findByUser_Id(userId);
-            if (author != null) {
-                authorService.deleteAuthor(author.getId());
-            }
-        }
-
-        // If removing SELLER role, delete all user's inventory/listings
-        if (roleName.equals("SELLER")) {
-            userBookInventoryRepository.deleteByUserId(userId);
         }
 
         userRepository.save(user);

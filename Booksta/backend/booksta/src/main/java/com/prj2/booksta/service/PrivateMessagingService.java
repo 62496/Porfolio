@@ -40,6 +40,10 @@ public class PrivateMessagingService {
             throw new IllegalArgumentException("Message content cannot be empty");
         }
 
+        if (senderId.equals(recipientId)) {
+            throw new IllegalArgumentException("You cannot send a message to yourself");
+        }
+
         User sender = getUserOrThrow(senderId, "Sender not found");
         User recipient = getUserOrThrow(recipientId, "Recipient not found");
 
@@ -115,18 +119,6 @@ public class PrivateMessagingService {
     }
 
     private PrivateConversation findOrCreateConversation(User sender, User recipient) {
-        // Handle self-conversation (same user)
-        if (sender.getId().equals(recipient.getId())) {
-            return conversationRepository
-                    .findBetweenUsers(sender.getId(), sender.getId())
-                    .orElseGet(() -> {
-                        PrivateConversation conversation = new PrivateConversation();
-                        conversation.setParticipant1(sender);
-                        conversation.setParticipant2(sender);
-                        return conversationRepository.save(conversation);
-                    });
-        }
-
         // On impose un ordre stable pour éviter les doublons (1,2) et (2,1)
         User first = sender.getId() < recipient.getId() ? sender : recipient;
         User second = sender.getId() < recipient.getId() ? recipient : sender;

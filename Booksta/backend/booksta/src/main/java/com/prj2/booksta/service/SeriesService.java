@@ -50,17 +50,7 @@ public class SeriesService {
                 .orElseThrow(() -> new AccessDeniedException("User is not an author"));
     }
 
-    private boolean isLibrarian() {
-        return SecurityContextHolder.getContext().getAuthentication()
-                .getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
-    }
-
     private void validateSeriesOwnership(Series series) {
-        // Librarians can modify any series
-        if (isLibrarian()) {
-            return;
-        }
         User user = getAuthenticatedUser();
         Author author = getAuthorForUser(user);
         if (series.getAuthor() == null || !series.getAuthor().getId().equals(author.getId())) {
@@ -121,16 +111,15 @@ public class SeriesService {
 
     @Transactional
     public SeriesResponse createSeries(SeriesRequest request) {
-        Author author;
+        User user = getAuthenticatedUser();
+        System.out.println("DEBUG createSeries - User: " + user.getId() + " - " + user.getEmail());
 
-        // If librarian and authorId is provided, use that author
-        if (isLibrarian() && request.getAuthorId() != null) {
-            author = authorRepository.findById(request.getAuthorId())
-                    .orElseThrow(() -> new EntityNotFoundException("Author not found: " + request.getAuthorId()));
-        } else {
-            // Otherwise, get the author for the authenticated user
-            User user = getAuthenticatedUser();
-            author = getAuthorForUser(user);
+        Author author = getAuthorForUser(user);
+        System.out.println("DEBUG createSeries - Author found: " + (author != null));
+        if (author != null) {
+            System.out.println("DEBUG createSeries - Author ID: " + author.getId());
+            System.out.println("DEBUG createSeries - Author name: " + author.getFirstName() + " " + author.getLastName());
+            System.out.println("DEBUG createSeries - Author.user: " + (author.getUser() != null ? author.getUser().getId() : "null"));
         }
 
         Series series = new Series();
@@ -138,7 +127,16 @@ public class SeriesService {
         series.setDescription(request.getDescription());
         series.setAuthor(author);
 
+        System.out.println("DEBUG createSeries - Series before save:");
+        System.out.println("DEBUG createSeries - Series.title: " + series.getTitle());
+        System.out.println("DEBUG createSeries - Series.author: " + (series.getAuthor() != null ? series.getAuthor().getId() : "null"));
+
         Series saved = seriesRepository.save(series);
+
+        System.out.println("DEBUG createSeries - Series after save:");
+        System.out.println("DEBUG createSeries - Saved Series ID: " + saved.getId());
+        System.out.println("DEBUG createSeries - Saved Series.author: " + (saved.getAuthor() != null ? saved.getAuthor().getId() : "null"));
+
         return toResponse(saved);
     }
 
@@ -165,16 +163,9 @@ public class SeriesService {
                 .orElseThrow(() -> new EntityNotFoundException("Series not found"));
         validateSeriesOwnership(series);
 
-        // Remove books from series
         for (Book book : series.getBooks()) {
             book.setSeries(null);
             bookRepository.save(book);
-        }
-
-        // Remove followers (don't delete users, just the follow relationship)
-        for (User follower : series.getFollowers()) {
-            follower.getFollowedSeries().remove(series);
-            userRepository.save(follower);
         }
 
         seriesRepository.delete(series);

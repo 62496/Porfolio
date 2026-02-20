@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface SeriesRepository extends JpaRepository<Series, Long> {
     List<Series> findByAuthorId(Long authorId);
-
-    void deleteByAuthorId(Long authorId);
 }

@@ -1,22 +1,22 @@
 package com.prj2.booksta.repository;
 
-
-import java.util.HashSet;
-import java.util.List;
+import com.prj2.booksta.model.Author;
+import com.prj2.booksta.model.Book;
+import com.prj2.booksta.model.Subject;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.prj2.booksta.model.Author;
-import com.prj2.booksta.model.Subject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import com.prj2.booksta.model.Book;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @DataJpaTest
 class BookRepositoryTest {
@@ -27,45 +27,39 @@ class BookRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    private Author testAuthor;
-    private Subject testSubject;
-
-    @BeforeEach
-    void setUp() {
-        // Create test author - use unique suffix to avoid conflicts
-        testAuthor = new Author();
-        testAuthor.setFirstName("TestFirst");
-        testAuthor.setLastName("TestAuthorLastName");
-        entityManager.persist(testAuthor);
-
-        // Create test subject with unique name to avoid conflicts with data-h2.sql
-        testSubject = new Subject();
-        testSubject.setName("UniqueTestSubject" + System.nanoTime());
-        entityManager.persist(testSubject);
-
-        // Create test book with unique ISBN
-        Book book = new Book();
-        book.setIsbn("TEST-ISBN-" + System.nanoTime());
-        book.setTitle("Test Book Title For Search");
-        book.setPublishingYear(1997);
-        book.setDescription("A test book description");
-        book.setAuthors(new HashSet<>());
-        book.getAuthors().add(testAuthor);
-        book.setSubjects(new HashSet<>());
-        book.getSubjects().add(testSubject);
-        book.setPages(309L);
-        entityManager.persist(book);
-
-        entityManager.flush();
-    }
-
     @Test
     void testSearchBooksFindsResults() {
-        List<Book> books = bookRepository.searchBooks("Test Book Title", null, null, null);
+        Subject fantasySubject = entityManager.find(Subject.class, 1L);
+
+        assertNotNull(fantasySubject, "Le sujet Fantasy (ID 1) devrait exister via data.sql");
+
+        Author author = new Author();
+        author.setFirstName("J.K.");
+        author.setLastName("Rowling");
+        entityManager.persist(author);
+
+        Book book = new Book();
+        book.setIsbn("978-0-12345-678-9");
+        book.setTitle("Harry Potter and the Philosopher's Stone");
+        book.setPublishingYear(1997);
+        book.setDescription("Un livre sur la magie");
+
+        book.setAuthors(new HashSet<>());
+        book.setSubjects(new HashSet<>());
+
+        book.getAuthors().add(author);
+        book.getSubjects().add(fantasySubject);
+
+        bookRepository.save(book);
+
+        List<Book> books = bookRepository.searchBooks("Harry", null, null, null);
 
         assertNotNull(books);
-        assertFalse(books.isEmpty());
-        assertTrue(books.stream().anyMatch(b -> b.getTitle().contains("Test Book Title")));
+        assertFalse(books.isEmpty(), "La liste ne doit pas être vide");
+        assertEquals("Harry Potter and the Philosopher's Stone", books.get(0).getTitle());
+
+        List<Book> fantasyBooks = bookRepository.searchBooks(null, null, "Fantasy", null);
+        assertFalse(fantasyBooks.isEmpty());
     }
 
     @Test
@@ -74,13 +68,5 @@ class BookRepositoryTest {
 
         assertNotNull(books);
         assertTrue(books.isEmpty());
-    }
-
-    @Test
-    void testSearchBooksByAuthor() {
-        List<Book> books = bookRepository.searchBooks(null, "TestAuthorLastName", null, null);
-
-        assertNotNull(books);
-        assertFalse(books.isEmpty());
     }
 }

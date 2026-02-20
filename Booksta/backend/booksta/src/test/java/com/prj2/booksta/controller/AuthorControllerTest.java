@@ -1,39 +1,43 @@
 package com.prj2.booksta.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prj2.booksta.exception.GlobalExceptionHandler;
 import com.prj2.booksta.model.Author;
 import com.prj2.booksta.model.Image;
 import com.prj2.booksta.model.dto.AuthorDetailResponse;
+import com.prj2.booksta.model.dto.UpdateAuthor;
 import com.prj2.booksta.service.AuthorService;
 import com.prj2.booksta.service.FileStorageService;
 import com.prj2.booksta.service.ImageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
-
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
 
     @Mock
     private AuthorService authorService;
@@ -47,336 +51,218 @@ class AuthorControllerTest {
     @InjectMocks
     private AuthorController authorController;
 
-    private Author testAuthor;
-    private AuthorDetailResponse testAuthorDetailResponse;
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
+    private Author author;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authorController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
         objectMapper = new ObjectMapper();
+        mockMvc = MockMvcBuilders.standaloneSetup(authorController).build();
 
-        testAuthor = new Author();
-        testAuthor.setId(1L);
-        testAuthor.setFirstName("John");
-        testAuthor.setLastName("Doe");
-        testAuthor.setBooks(new HashSet<>());
-        testAuthor.setFollowers(new HashSet<>());
-
-        testAuthorDetailResponse = new AuthorDetailResponse(
-                1L,
-                "John",
-                "Doe",
-                "http://example.com/author.jpg",
-                100,  // followerCount
-                5,    // bookCount
-                2,    // seriesCount
-                Collections.emptyList(),  // books
-                Collections.emptyList()   // series
-        );
+        author = new Author();
+        author.setId(1L);
+        author.setFirstName("Victor");
+        author.setLastName("Hugo");
     }
 
-    @Nested
-    @DisplayName("GET /api/authors tests")
-    class GetAllAuthorsTests {
+    @Test
+    void testGetAuthors() throws Exception {
+        when(authorService.getAllAuthors()).thenReturn(Collections.singletonList(author));
 
-        @Test
-        @DisplayName("Should return empty list when no authors exist")
-        void getAuthors_NoAuthorsExist_ReturnsEmptyList() throws Exception {
-            when(authorService.getAllAuthors()).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/api/authors")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].firstName").value("Victor"));
 
-            mockMvc.perform(get("/api/authors"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$").isEmpty());
-
-            verify(authorService, times(1)).getAllAuthors();
-        }
-
-        @Test
-        @DisplayName("Should return all authors when authors exist")
-        void getAuthors_AuthorsExist_ReturnsAllAuthors() throws Exception {
-            Author author2 = new Author();
-            author2.setId(2L);
-            author2.setFirstName("Jane");
-            author2.setLastName("Smith");
-            author2.setBooks(new HashSet<>());
-            author2.setFollowers(new HashSet<>());
-
-            when(authorService.getAllAuthors()).thenReturn(Arrays.asList(testAuthor, author2));
-
-            mockMvc.perform(get("/api/authors"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$.length()").value(2))
-                    .andExpect(jsonPath("$[0].firstName").value("John"))
-                    .andExpect(jsonPath("$[1].firstName").value("Jane"));
-
-            verify(authorService, times(1)).getAllAuthors();
-        }
+        verify(authorService).getAllAuthors();
     }
 
-    @Nested
-    @DisplayName("GET /api/authors/{id} tests")
-    class GetAuthorByIdTests {
+    @Test
+    void testGetAuthorById() throws Exception {
+        AuthorDetailResponse response = new AuthorDetailResponse();
+        response.setId(1L);
+        response.setFirstName("Victor");
+        response.setLastName("Hugo");
 
-        @Test
-        @DisplayName("Should return author details when ID exists")
-        void getAuthorById_AuthorExists_ReturnsAuthorDetails() throws Exception {
-            when(authorService.getAuthorDetails(1L)).thenReturn(testAuthorDetailResponse);
+        when(authorService.getAuthorDetails(1L)).thenReturn(response);
 
-            mockMvc.perform(get("/api/authors/1"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.id").value(1))
-                    .andExpect(jsonPath("$.firstName").value("John"))
-                    .andExpect(jsonPath("$.lastName").value("Doe"))
-                    .andExpect(jsonPath("$.followerCount").value(100))
-                    .andExpect(jsonPath("$.bookCount").value(5))
-                    .andExpect(jsonPath("$.seriesCount").value(2));
+        mockMvc.perform(get("/api/authors/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("Victor"));
 
-            verify(authorService).getAuthorDetails(1L);
-        }
-
-        @Test
-        @DisplayName("Should return 404 when author not found")
-        void getAuthorById_AuthorNotFound_Returns404() throws Exception {
-            when(authorService.getAuthorDetails(999L))
-                    .thenThrow(new EntityNotFoundException("Author not found"));
-
-            mockMvc.perform(get("/api/authors/999"))
-                    .andExpect(status().isNotFound());
-
-            verify(authorService).getAuthorDetails(999L);
-        }
+        verify(authorService).getAuthorDetails(1L);
     }
 
-    @Nested
-    @DisplayName("POST /api/authors tests")
-    class AddAuthorTests {
+    @Test
+    void testAddAuthor_WithFile() throws Exception {
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(author).getBytes(StandardCharsets.UTF_8));
 
-        @Test
-        @DisplayName("Should create author with image file")
-        void addAuthor_WithImageFile_ReturnsCreatedAuthor() throws Exception {
-            Author authorToSave = new Author();
-            authorToSave.setFirstName("John");
-            authorToSave.setLastName("Doe");
+        MockMultipartFile filePart = new MockMultipartFile(
+                "image", "photo.jpg", "image/jpeg", "content".getBytes());
 
-            Author savedAuthor = new Author();
-            savedAuthor.setId(1L);
-            savedAuthor.setFirstName("John");
-            savedAuthor.setLastName("Doe");
+        when(authorService.save(any(Author.class))).thenReturn(author);
+        when(fileStorageService.saveAuthorImage(any(), eq(1L))).thenReturn("path/to/photo.jpg");
 
-            MockMultipartFile imageFile = new MockMultipartFile(
-                    "image", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes()
-            );
+        Image savedImage = new Image();
+        savedImage.setUrl("path/to/photo.jpg");
+        when(imageService.createImage(any(Image.class))).thenReturn(savedImage);
 
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE,
-                    objectMapper.writeValueAsBytes(authorToSave)
-            );
+        mockMvc.perform(multipart("/api/authors")
+                .file(authorPart)
+                .file(filePart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
 
-            when(authorService.save(any(Author.class))).thenReturn(savedAuthor);
-            when(fileStorageService.saveAuthorImage(any(), eq(1L))).thenReturn("http://example.com/author.jpg");
-            when(imageService.createImage(any(Image.class))).thenAnswer(i -> i.getArgument(0));
-
-            mockMvc.perform(multipart("/api/authors")
-                            .file(authorPart)
-                            .file(imageFile))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(1))
-                    .andExpect(jsonPath("$.firstName").value("John"));
-
-            verify(authorService, times(2)).save(any(Author.class));
-            verify(fileStorageService).saveAuthorImage(any(), eq(1L));
-        }
-
-        @Test
-        @DisplayName("Should create author with image URL")
-        void addAuthor_WithImageUrl_ReturnsCreatedAuthor() throws Exception {
-            Author authorToSave = new Author();
-            authorToSave.setFirstName("John");
-            authorToSave.setLastName("Doe");
-
-            Author savedAuthor = new Author();
-            savedAuthor.setId(1L);
-            savedAuthor.setFirstName("John");
-            savedAuthor.setLastName("Doe");
-
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE,
-                    objectMapper.writeValueAsBytes(authorToSave)
-            );
-
-            MockMultipartFile imageUrlPart = new MockMultipartFile(
-                    "imageUrl", "", MediaType.TEXT_PLAIN_VALUE,
-                    "http://example.com/existing-image.jpg".getBytes()
-            );
-
-            when(authorService.save(any(Author.class))).thenReturn(savedAuthor);
-            when(imageService.createImage(any(Image.class))).thenAnswer(i -> i.getArgument(0));
-
-            mockMvc.perform(multipart("/api/authors")
-                            .file(authorPart)
-                            .file(imageUrlPart))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(1));
-
-            verify(authorService, times(2)).save(any(Author.class));
-            verify(fileStorageService, never()).saveAuthorImage(any(), anyLong());
-        }
-
-        @Test
-        @DisplayName("Should create author without image")
-        void addAuthor_WithoutImage_ReturnsCreatedAuthor() throws Exception {
-            Author authorToSave = new Author();
-            authorToSave.setFirstName("John");
-            authorToSave.setLastName("Doe");
-
-            Author savedAuthor = new Author();
-            savedAuthor.setId(1L);
-            savedAuthor.setFirstName("John");
-            savedAuthor.setLastName("Doe");
-
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE,
-                    objectMapper.writeValueAsBytes(authorToSave)
-            );
-
-            when(authorService.save(any(Author.class))).thenReturn(savedAuthor);
-
-            mockMvc.perform(multipart("/api/authors")
-                            .file(authorPart))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(1));
-
-            verify(authorService, times(2)).save(any(Author.class));
-            verify(imageService, never()).createImage(any());
-        }
+        verify(fileStorageService).saveAuthorImage(any(), eq(1L));
+        verify(imageService).createImage(any(Image.class));
+        verify(authorService, times(2)).save(any(Author.class));
     }
 
-    @Nested
-    @DisplayName("PUT /api/authors/{id} tests")
-    class UpdateAuthorTests {
+    @Test
+    void testAddAuthor_WithImageUrl() throws Exception {
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(author).getBytes(StandardCharsets.UTF_8));
 
-        @Test
-        @DisplayName("Should update author successfully")
-        void updateAuthor_ValidRequest_ReturnsUpdatedAuthor() throws Exception {
-            Author existingAuthor = new Author();
-            existingAuthor.setId(1L);
-            existingAuthor.setFirstName("John");
-            existingAuthor.setLastName("Doe");
+        MockMultipartFile urlPart = new MockMultipartFile(
+                "imageUrl", "", "text/plain", "http://example.com/avatar.png".getBytes());
 
-            Author updatedAuthor = new Author();
-            updatedAuthor.setId(1L);
-            updatedAuthor.setFirstName("Johnny");
-            updatedAuthor.setLastName("Doe");
+        when(authorService.save(any(Author.class))).thenReturn(author);
 
-            String updateJson = "{\"firstName\":\"Johnny\",\"lastName\":\"Doe\"}";
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE, updateJson.getBytes()
-            );
+        Image savedImage = new Image();
+        savedImage.setUrl("http://example.com/avatar.png");
+        when(imageService.createImage(any(Image.class))).thenReturn(savedImage);
 
-            when(authorService.getAuthorById(1L)).thenReturn(Optional.of(existingAuthor));
-            when(authorService.save(any(Author.class))).thenReturn(updatedAuthor);
+        mockMvc.perform(multipart("/api/authors")
+                .file(authorPart)
+                .file(urlPart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
 
-            mockMvc.perform(multipart("/api/authors/1")
-                            .file(authorPart)
-                            .with(request -> {
-                                request.setMethod("PUT");
-                                return request;
-                            }))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.firstName").value("Johnny"));
-
-            verify(authorService).save(any(Author.class));
-        }
-
-        @Test
-        @DisplayName("Should return 404 when author not found")
-        void updateAuthor_AuthorNotFound_Returns404() throws Exception {
-            String updateJson = "{\"firstName\":\"Johnny\",\"lastName\":\"Doe\"}";
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE, updateJson.getBytes()
-            );
-
-            when(authorService.getAuthorById(999L)).thenReturn(Optional.empty());
-
-            mockMvc.perform(multipart("/api/authors/999")
-                            .file(authorPart)
-                            .with(request -> {
-                                request.setMethod("PUT");
-                                return request;
-                            }))
-                    .andExpect(status().isNotFound());
-
-            verify(authorService, never()).save(any());
-        }
-
-        @Test
-        @DisplayName("Should update author with new image file")
-        void updateAuthor_WithNewImage_ReturnsUpdatedAuthor() throws Exception {
-            Author existingAuthor = new Author();
-            existingAuthor.setId(1L);
-            existingAuthor.setFirstName("John");
-            existingAuthor.setLastName("Doe");
-
-            String updateJson = "{\"firstName\":\"Johnny\",\"lastName\":\"Doe\"}";
-            MockMultipartFile authorPart = new MockMultipartFile(
-                    "author", "", MediaType.APPLICATION_JSON_VALUE, updateJson.getBytes()
-            );
-
-            MockMultipartFile imageFile = new MockMultipartFile(
-                    "image", "new-image.jpg", MediaType.IMAGE_JPEG_VALUE, "new image content".getBytes()
-            );
-
-            when(authorService.getAuthorById(1L)).thenReturn(Optional.of(existingAuthor));
-            when(fileStorageService.saveAuthorImage(any(), eq(1L))).thenReturn("http://example.com/new-author.jpg");
-            when(imageService.createImage(any(Image.class))).thenAnswer(i -> i.getArgument(0));
-            when(authorService.save(any(Author.class))).thenReturn(existingAuthor);
-
-            mockMvc.perform(multipart("/api/authors/1")
-                            .file(authorPart)
-                            .file(imageFile)
-                            .with(request -> {
-                                request.setMethod("PUT");
-                                return request;
-                            }))
-                    .andExpect(status().isOk());
-
-            verify(fileStorageService).saveAuthorImage(any(), eq(1L));
-            verify(imageService).createImage(any(Image.class));
-        }
+        verify(fileStorageService, never()).saveAuthorImage(any(), any());
+        verify(imageService).createImage(any(Image.class));
+        verify(authorService, times(2)).save(any(Author.class));
     }
 
-    @Nested
-    @DisplayName("DELETE /api/authors/{id} tests")
-    class DeleteAuthorTests {
+    @Test
+    void testAddAuthor_NoImage() throws Exception {
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(author).getBytes(StandardCharsets.UTF_8));
 
-        @Test
-        @DisplayName("Should delete author successfully")
-        void deleteAuthor_AuthorExists_ReturnsNoContent() throws Exception {
-            doNothing().when(authorService).deleteAuthor(1L);
+        when(authorService.save(any(Author.class))).thenReturn(author);
 
-            mockMvc.perform(delete("/api/authors/1"))
-                    .andExpect(status().isNoContent());
+        mockMvc.perform(multipart("/api/authors")
+                .file(authorPart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
 
-            verify(authorService).deleteAuthor(1L);
-        }
-
-        @Test
-        @DisplayName("Should return 404 when author not found")
-        void deleteAuthor_AuthorNotFound_Returns404() throws Exception {
-            doThrow(new EntityNotFoundException("Author not found"))
-                    .when(authorService).deleteAuthor(999L);
-
-            mockMvc.perform(delete("/api/authors/999"))
-                    .andExpect(status().isNotFound());
-
-            verify(authorService).deleteAuthor(999L);
-        }
+        verify(fileStorageService, never()).saveAuthorImage(any(), any());
+        verify(imageService, never()).createImage(any(Image.class));
+        verify(authorService, times(2)).save(any(Author.class));
     }
+
+    @Test
+    void testUpdateAuthor_WithFile_NoExistingImage() throws Exception {
+        UpdateAuthor updateDto = new UpdateAuthor("VictorUpdated", "HugoUpdated", null);
+        
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(updateDto).getBytes(StandardCharsets.UTF_8));
+
+        MockMultipartFile filePart = new MockMultipartFile(
+                "image", "new.jpg", "image/jpeg", "content".getBytes());
+
+        when(authorService.getAuthorById(1L)).thenReturn(Optional.of(author));
+        when(fileStorageService.saveAuthorImage(any(), eq(1L))).thenReturn("new/path.jpg");
+        when(imageService.createImage(any(Image.class))).thenReturn(new Image("new/path.jpg"));
+        when(authorService.save(any(Author.class))).thenReturn(author);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/authors/{id}", 1L)
+                .file(authorPart)
+                .file(filePart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        assertEquals("VictorUpdated", author.getFirstName());
+        assertEquals("HugoUpdated", author.getLastName());
+        verify(imageService).createImage(any(Image.class));
+    }
+
+    @Test
+    void testUpdateAuthor_WithFile_ExistingImage() throws Exception {
+        Image existingImage = new Image("old.jpg");
+        author.setImage(existingImage);
+
+        UpdateAuthor updateDto = new UpdateAuthor(null, null, null);
+        
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(updateDto).getBytes(StandardCharsets.UTF_8));
+
+        MockMultipartFile filePart = new MockMultipartFile(
+                "image", "new.jpg", "image/jpeg", "content".getBytes());
+
+        when(authorService.getAuthorById(1L)).thenReturn(Optional.of(author));
+        when(fileStorageService.saveAuthorImage(any(), eq(1L))).thenReturn("updated/path.jpg");
+        when(authorService.save(any(Author.class))).thenReturn(author);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/authors/{id}", 1L)
+                .file(authorPart)
+                .file(filePart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        assertEquals("updated/path.jpg", author.getImage().getUrl());
+        verify(imageService).createImage(existingImage);
+    }
+
+    @Test
+    void testUpdateAuthor_WithDtoUrl_NoExistingImage() throws Exception {
+        UpdateAuthor updateDto = new UpdateAuthor("Victor", "Hugo", "http://new-url.com");
+        
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(updateDto).getBytes(StandardCharsets.UTF_8));
+
+        when(authorService.getAuthorById(1L)).thenReturn(Optional.of(author));
+        when(imageService.createImage(any(Image.class))).thenReturn(new Image("http://new-url.com"));
+        when(authorService.save(any(Author.class))).thenReturn(author);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/authors/{id}", 1L)
+                .file(authorPart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        assertEquals("http://new-url.com", author.getImage().getUrl());
+    }
+
+    @Test
+    void testUpdateAuthor_WithDtoUrl_ExistingImage() throws Exception {
+        Image existingImage = new Image("old.jpg");
+        author.setImage(existingImage);
+
+        UpdateAuthor updateDto = new UpdateAuthor(null, null, "http://update-url.com");
+        
+        MockMultipartFile authorPart = new MockMultipartFile(
+                "author", "", "application/json",
+                objectMapper.writeValueAsString(updateDto).getBytes(StandardCharsets.UTF_8));
+
+        when(authorService.getAuthorById(1L)).thenReturn(Optional.of(author));
+        when(authorService.save(any(Author.class))).thenReturn(author);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/authors/{id}", 1L)
+                .file(authorPart)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        assertEquals("http://update-url.com", author.getImage().getUrl());
+        verify(imageService).createImage(existingImage);
+    }
+
 }

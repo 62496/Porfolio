@@ -12,5 +12,4 @@ public interface ReadingProgressRepository extends JpaRepository<ReadingProgress
 
     List<ReadingProgress> findByUserId(Long userId);
 
-    void deleteByBook_Isbn(String isbn);
 }

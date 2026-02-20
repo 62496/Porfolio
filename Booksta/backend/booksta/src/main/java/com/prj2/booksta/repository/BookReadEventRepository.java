@@ -14,6 +14,4 @@ public interface BookReadEventRepository extends JpaRepository<BookReadEvent, Lo
     Optional<BookReadEvent> findTopByUserAndBookOrderByOccurredAtDesc(User user, Book book);
 
     List<BookReadEvent> findByUser_IdAndBook_IsbnOrderByOccurredAtDesc(Long id, String isbn);
-
-    void deleteByBook_Isbn(String isbn);
 }

@@ -41,14 +41,14 @@ public class SeriesController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('AUTHOR') or hasRole('LIBRARIAN')")
+    @PreAuthorize("hasRole('AUTHOR')")
     public ResponseEntity<SeriesResponse> createSeries(@RequestBody SeriesRequest request) {
         SeriesResponse saved = seriesService.createSeries(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('LIBRARIAN') or (hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id))")
+    @PreAuthorize("hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id)")
     public ResponseEntity<SeriesResponse> updateSeries(
             @PathVariable Long id,
             @RequestBody SeriesRequest request) {
@@ -56,14 +56,14 @@ public class SeriesController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('LIBRARIAN') or (hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id))")
+    @PreAuthorize("hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id)")
     public ResponseEntity<Void> deleteSeries(@PathVariable Long id) {
         seriesService.deleteSeries(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/books/{isbn}")
-    @PreAuthorize("hasRole('LIBRARIAN') or (hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id) and @authorAccessChecker.isAuthorOfBook(authentication, #isbn))")
+    @PreAuthorize("hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id) and @authorAccessChecker.isAuthorOfBook(authentication, #isbn)")
     public ResponseEntity<SeriesResponse> addBookToSeries(
             @PathVariable Long id,
             @PathVariable String isbn) {
@@ -71,7 +71,7 @@ public class SeriesController {
     }
 
     @DeleteMapping("/{id}/books/{isbn}")
-    @PreAuthorize("hasRole('LIBRARIAN') or (hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id) and @authorAccessChecker.isAuthorOfBook(authentication, #isbn))")
+    @PreAuthorize("hasRole('AUTHOR') and @seriesAccessChecker.isAuthorOfSeries(authentication, #id) and @authorAccessChecker.isAuthorOfBook(authentication, #isbn)")
     public ResponseEntity<SeriesResponse> removeBookFromSeries(
             @PathVariable Long id,
             @PathVariable String isbn) {

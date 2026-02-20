@@ -1,7 +1,6 @@
 package com.prj2.booksta.controller;
 
 import com.prj2.booksta.model.*;
-import com.prj2.booksta.model.dto.BookFilterRequest;
 import com.prj2.booksta.model.dto.CreateReadingEventRequest;
 import com.prj2.booksta.model.dto.UpdateBook;
 import com.prj2.booksta.repository.SeriesRepository;
@@ -69,22 +68,6 @@ public class BookController {
         return ResponseEntity.ok(bookService.searchBooks(title, authorName, subjectName, year));
     }
 
-    @GetMapping("/filter")
-    public ResponseEntity<List<Book>> filterBooks(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Integer yearMin,
-            @RequestParam(required = false) Integer yearMax,
-            @RequestParam(required = false) Long pagesMin,
-            @RequestParam(required = false) Long pagesMax,
-            @RequestParam(required = false) List<Long> authorIds,
-            @RequestParam(required = false) List<Long> subjectIds
-    ) {
-        BookFilterRequest filter = new BookFilterRequest(
-                title, yearMin, yearMax, pagesMin, pagesMax, authorIds, subjectIds
-        );
-        return ResponseEntity.ok(bookService.filterBooks(filter));
-    }
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Book> createBook(
             @RequestPart("book") Book book,
@@ -114,10 +97,9 @@ public class BookController {
     }
 
     @DeleteMapping("/{isbn}")
-    @PreAuthorize("hasRole('LIBRARIAN')")
-    public ResponseEntity<Void> deleteBook(@PathVariable String isbn) {
+    public ResponseEntity<String> deleteBook(@PathVariable String isbn) {
         bookService.delete(isbn);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Deleted book: " + isbn);
     }
 
     @GetMapping("/series/{seriesId}")

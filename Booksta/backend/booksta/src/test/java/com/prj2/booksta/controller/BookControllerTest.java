@@ -1,27 +1,37 @@
 package com.prj2.booksta.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prj2.booksta.exception.GlobalExceptionHandler;
-import com.prj2.booksta.model.Author;
-import com.prj2.booksta.model.Book;
-import com.prj2.booksta.model.Image;
-import com.prj2.booksta.model.Subject;
+import com.prj2.booksta.model.*;
+import com.prj2.booksta.model.dto.CreateReadingEventRequest;
+import com.prj2.booksta.model.dto.UpdateBook;
+import com.prj2.booksta.repository.SeriesRepository;
 import com.prj2.booksta.service.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.*;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,315 +39,275 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
 
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
+        @Mock
+        private BookService bookService;
 
-    @Mock
-    private BookService bookService;
+        @Mock
+        private FileStorageService fileStorageService;
 
-    @Mock
-    private FileStorageService fileStorageService;
+        @Mock
+        private ImageService imageService;
 
-    @Mock
-    private ImageService imageService;
+        @Mock
+        private ReportService reportService;
 
-    @Mock
-    private ReportService reportService;
+        @Mock
+        private UserService userService;
 
-    @Mock
-    private UserService userService;
+        @Mock
+        private SeriesRepository seriesRepository;
 
-    @Mock
-    private BookReadEventService bookReadEventService;
+        @Mock
+        private BookReadEventService bookReadEventService;
 
-    @Mock
-    private ReadingSessionService readingSessionService;
+        @Mock
+        private ReadingSessionService readingSessionService;
 
-    @InjectMocks
-    private BookController bookController;
+        @InjectMocks
+        private BookController bookController;
 
-    private Book testBook;
-    private Author testAuthor;
-    private Subject testSubject;
+        private MockMvc mockMvc;
+        private ObjectMapper objectMapper;
+        private UserDetails mockUserDetails;
+        private Authentication mockAuthentication;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(bookController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-        objectMapper = new ObjectMapper();
+        @BeforeEach
+        void setUp() {
+                objectMapper = new ObjectMapper();
 
-        testAuthor = new Author();
-        testAuthor.setId(1L);
-        testAuthor.setFirstName("John");
-        testAuthor.setLastName("Doe");
+                mockUserDetails = mock(UserDetails.class);
+                lenient().when(mockUserDetails.getUsername()).thenReturn("test@test.com");
 
-        testSubject = new Subject();
-        testSubject.setId(1L);
-        testSubject.setName("Fiction");
+                mockAuthentication = mock(Authentication.class);
+                lenient().when(mockAuthentication.getName()).thenReturn("test@test.com");
+                lenient().when(mockAuthentication.getPrincipal()).thenReturn(mockUserDetails);
 
-        testBook = new Book();
-        testBook.setIsbn("9781234567890");
-        testBook.setTitle("Test Book");
-        testBook.setPublishingYear(2023);
-        testBook.setDescription("A test book description");
-        testBook.setAuthors(new HashSet<>(Set.of(testAuthor)));
-        testBook.setSubjects(new HashSet<>(Set.of(testSubject)));
-        testBook.setPages(300L);
-        testBook.setImage(new Image("http://example.com/cover.jpg"));
-    }
+                HandlerMethodArgumentResolver putPrincipal = new HandlerMethodArgumentResolver() {
+                        @Override
+                        public boolean supportsParameter(MethodParameter parameter) {
+                                return parameter.getParameterType().isAssignableFrom(UserDetails.class);
+                        }
 
-    @Nested
-    @DisplayName("GET /api/books tests")
-    class GetAllBooksTests {
+                        @Override
+                        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+                                return mockUserDetails;
+                        }
+                };
 
-        @Test
-        @DisplayName("Should return empty list when no books exist")
-        void getAllBooks_NoBooksExist_ReturnsEmptyList() throws Exception {
-            when(bookService.getAllBooks()).thenReturn(Collections.emptyList());
-
-            mockMvc.perform(get("/api/books"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$").isEmpty());
-
-            verify(bookService, times(1)).getAllBooks();
+                mockMvc = MockMvcBuilders.standaloneSetup(bookController)
+                                .setMessageConverters(new MappingJackson2HttpMessageConverter(),
+                                                new StringHttpMessageConverter())
+                                .setCustomArgumentResolvers(putPrincipal)
+                                .build();
         }
 
         @Test
-        @DisplayName("Should return all books when books exist")
-        void getAllBooks_BooksExist_ReturnsAllBooks() throws Exception {
-            Book book2 = new Book();
-            book2.setIsbn("9789876543210");
-            book2.setTitle("Another Book");
-            book2.setPublishingYear(2022);
-            book2.setDescription("Another description");
-            book2.setAuthors(new HashSet<>());
-            book2.setSubjects(new HashSet<>());
+        void testGetAllBooks() throws Exception {
+                when(bookService.getAllBooks()).thenReturn(Collections.emptyList());
 
-            when(bookService.getAllBooks()).thenReturn(Arrays.asList(testBook, book2));
+                mockMvc.perform(get("/api/books")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
 
-            mockMvc.perform(get("/api/books"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$.length()").value(2))
-                    .andExpect(jsonPath("$[0].isbn").value("9781234567890"))
-                    .andExpect(jsonPath("$[1].isbn").value("9789876543210"));
-
-            verify(bookService, times(1)).getAllBooks();
-        }
-    }
-
-    @Nested
-    @DisplayName("GET /api/books/{isbn} tests")
-    class GetBookByIsbnTests {
-
-        @Test
-        @DisplayName("Should return book when ISBN exists")
-        void getBookByIsbn_BookExists_ReturnsBook() throws Exception {
-            when(bookService.getBookByIsbn("9781234567890")).thenReturn(testBook);
-
-            mockMvc.perform(get("/api/books/9781234567890"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.isbn").value("9781234567890"))
-                    .andExpect(jsonPath("$.title").value("Test Book"))
-                    .andExpect(jsonPath("$.publishingYear").value(2023))
-                    .andExpect(jsonPath("$.description").value("A test book description"))
-                    .andExpect(jsonPath("$.pages").value(300));
-
-            verify(bookService).getBookByIsbn("9781234567890");
+                verify(bookService).getAllBooks();
         }
 
         @Test
-        @DisplayName("Should return 400 when ISBN does not exist")
-        void getBookByIsbn_BookNotExists_Returns400() throws Exception {
-            when(bookService.getBookByIsbn("nonexistent"))
-                    .thenThrow(new IllegalArgumentException("Book with isbn not found: nonexistent"));
+        void testGetBookByIsbnFound() throws Exception {
+                Book book = new Book();
+                book.setIsbn("123");
 
-            mockMvc.perform(get("/api/books/nonexistent"))
-                    .andExpect(status().isBadRequest());
+                when(bookService.getBookByIsbn("123")).thenReturn(book);
 
-            verify(bookService).getBookByIsbn("nonexistent");
-        }
-    }
-
-    @Nested
-    @DisplayName("GET /api/books/search tests")
-    class SearchBooksTests {
-
-        @Test
-        @DisplayName("Should search by title")
-        void searchBooks_ByTitle_ReturnsMatchingBooks() throws Exception {
-            when(bookService.searchBooks("Test", null, null, null))
-                    .thenReturn(Collections.singletonList(testBook));
-
-            mockMvc.perform(get("/api/books/search")
-                            .param("title", "Test"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$.length()").value(1))
-                    .andExpect(jsonPath("$[0].title").value("Test Book"));
-
-            verify(bookService).searchBooks("Test", null, null, null);
+                mockMvc.perform(get("/api/books/123")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.isbn").value("123"));
         }
 
         @Test
-        @DisplayName("Should search by author name")
-        void searchBooks_ByAuthorName_ReturnsMatchingBooks() throws Exception {
-            when(bookService.searchBooks(null, "John", null, null))
-                    .thenReturn(Collections.singletonList(testBook));
+        void testSearchBooks() throws Exception {
+                when(bookService.searchBooks("harry", null, null, null))
+                                .thenReturn(Collections.emptyList());
 
-            mockMvc.perform(get("/api/books/search")
-                            .param("authorName", "John"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1));
-
-            verify(bookService).searchBooks(null, "John", null, null);
+                mockMvc.perform(get("/api/books/search")
+                                .param("title", "harry")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
         }
 
         @Test
-        @DisplayName("Should search by subject")
-        void searchBooks_BySubject_ReturnsMatchingBooks() throws Exception {
-            when(bookService.searchBooks(null, null, "Fiction", null))
-                    .thenReturn(Collections.singletonList(testBook));
+        void testGetBooksBySeries() throws Exception {
+                when(bookService.findBySeriesId(10L)).thenReturn(Collections.emptyList());
 
-            mockMvc.perform(get("/api/books/search")
-                            .param("subjectName", "Fiction"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1));
-
-            verify(bookService).searchBooks(null, null, "Fiction", null);
+                mockMvc.perform(get("/api/books/series/10")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
         }
 
         @Test
-        @DisplayName("Should search by year")
-        void searchBooks_ByYear_ReturnsMatchingBooks() throws Exception {
-            when(bookService.searchBooks(null, null, null, 2023))
-                    .thenReturn(Collections.singletonList(testBook));
+        void testCreateBookWithImage() throws Exception {
+                Book bookToSave = new Book();
+                bookToSave.setIsbn("555");
 
-            mockMvc.perform(get("/api/books/search")
-                            .param("year", "2023"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1));
+                MockMultipartFile bookPart = new MockMultipartFile(
+                                "book", "", "application/json",
+                                objectMapper.writeValueAsBytes(bookToSave));
 
-            verify(bookService).searchBooks(null, null, null, 2023);
+                MockMultipartFile imageFile = new MockMultipartFile(
+                                "image", "cover.jpg", "image/jpeg", "content".getBytes());
+
+                when(fileStorageService.saveBookImage(any(), eq("555"))).thenReturn("path.jpg");
+                when(imageService.createImage(any(Image.class))).thenReturn(new Image());
+                when(bookService.save(any(Book.class))).thenReturn(bookToSave);
+
+                mockMvc.perform(multipart("/api/books")
+                                .file(bookPart)
+                                .file(imageFile))
+                                .andExpect(status().isCreated());
+
+                verify(fileStorageService).saveBookImage(any(), eq("555"));
         }
 
         @Test
-        @DisplayName("Should search by multiple criteria")
-        void searchBooks_ByMultipleCriteria_ReturnsMatchingBooks() throws Exception {
-            when(bookService.searchBooks("Test", "John", "Fiction", 2023))
-                    .thenReturn(Collections.singletonList(testBook));
+        void testUpdateBook() throws Exception {
+                UpdateBook updateDto = new UpdateBook(
+                                2023,
+                                300L,
+                                "Updated Title",
+                                "New Description",
+                                null,
+                                null,
+                                null);
 
-            mockMvc.perform(get("/api/books/search")
-                            .param("title", "Test")
-                            .param("authorName", "John")
-                            .param("subjectName", "Fiction")
-                            .param("year", "2023"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1));
+                MockMultipartFile bookPart = new MockMultipartFile(
+                                "book", "", "application/json",
+                                objectMapper.writeValueAsBytes(updateDto));
 
-            verify(bookService).searchBooks("Test", "John", "Fiction", 2023);
+                Book updatedBook = new Book();
+                updatedBook.setIsbn("123");
+                updatedBook.setTitle("Updated Title");
+
+                when(bookService.updateBook(any(UpdateBook.class), eq("123"), any()))
+                                .thenReturn(updatedBook);
+
+                mockMvc.perform(multipart("/api/books/123")
+                                .file(bookPart)
+                                .with(request -> {
+                                        request.setMethod("PUT");
+                                        return request;
+                                }))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.title").value("Updated Title"));
+
+                verify(bookService).updateBook(any(UpdateBook.class), eq("123"), any());
         }
 
         @Test
-        @DisplayName("Should return empty list when no matches")
-        void searchBooks_NoMatches_ReturnsEmptyList() throws Exception {
-            when(bookService.searchBooks("Nonexistent", null, null, null))
-                    .thenReturn(Collections.emptyList());
+        void testDeleteBook() throws Exception {
+                doNothing().when(bookService).delete("123");
 
-            mockMvc.perform(get("/api/books/search")
-                            .param("title", "Nonexistent"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isArray())
-                    .andExpect(jsonPath("$").isEmpty());
-        }
-    }
+                mockMvc.perform(delete("/api/books/123"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").value("Deleted book: 123"));
 
-    @Nested
-    @DisplayName("DELETE /api/books/{isbn} tests")
-    class DeleteBookTests {
-
-        @Test
-        @DisplayName("Should delete book successfully")
-        void deleteBook_BookExists_ReturnsNoContent() throws Exception {
-            doNothing().when(bookService).delete("9781234567890");
-
-            mockMvc.perform(delete("/api/books/9781234567890"))
-                    .andExpect(status().isNoContent());
-
-            verify(bookService).delete("9781234567890");
+                verify(bookService).delete("123");
         }
 
         @Test
-        @DisplayName("Should return 404 when book not found")
-        void deleteBook_BookNotFound_Returns404() throws Exception {
-            doThrow(new EntityNotFoundException("Book not found"))
-                    .when(bookService).delete("nonexistent");
+        void testReportBook() throws Exception {
+                String isbn = "12345";
+                BookReport inputReport = new BookReport();
 
-            mockMvc.perform(delete("/api/books/nonexistent"))
-                    .andExpect(status().isNotFound());
+                Book book = new Book();
+                book.setIsbn(isbn);
+                User user = new User();
+                user.setEmail("test@test.com");
+                BookReport savedReport = new BookReport();
+                savedReport.setId(1L);
 
-            verify(bookService).delete("nonexistent");
-        }
-    }
+                when(userService.getUserByEmail("test@test.com")).thenReturn(user);
+                when(bookService.getBookByIsbn(isbn)).thenReturn(book);
+                when(reportService.createBookReport(any(BookReport.class))).thenReturn(savedReport);
 
-    @Nested
-    @DisplayName("GET /api/books/series/{seriesId} tests")
-    class GetBooksBySeriesTests {
-
-        @Test
-        @DisplayName("Should return books in series")
-        void getBooksBySeries_BooksExist_ReturnsBooks() throws Exception {
-            when(bookService.findBySeriesId(1L)).thenReturn(List.of(testBook));
-
-            mockMvc.perform(get("/api/books/series/1"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1))
-                    .andExpect(jsonPath("$[0].isbn").value("9781234567890"));
-
-            verify(bookService).findBySeriesId(1L);
+                mockMvc.perform(post("/api/books/{isbn}/reports", isbn)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(inputReport)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id").value(1));
         }
 
         @Test
-        @DisplayName("Should return empty list when no books in series")
-        void getBooksBySeries_NoBooksInSeries_ReturnsEmptyList() throws Exception {
-            when(bookService.findBySeriesId(1L)).thenReturn(Collections.emptyList());
+        void testCreateBookReadEvent() throws Exception {
+                String isbn = "123";
+                CreateReadingEventRequest request = new CreateReadingEventRequest(ReadingEventType.STARTED_READING);
 
-            mockMvc.perform(get("/api/books/series/1"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isEmpty());
-        }
-    }
+                BookReadEvent event = new BookReadEvent();
+                event.setId(100L);
 
-    @Nested
-    @DisplayName("GET /api/books/author/{authorId} tests")
-    class GetBooksByAuthorTests {
+                when(bookReadEventService.createReadEvent(eq("test@test.com"), eq(isbn), any()))
+                                .thenReturn(event);
 
-        @Test
-        @DisplayName("Should return books by author")
-        void getBooksByAuthor_BooksExist_ReturnsBooks() throws Exception {
-            when(bookService.findByAuthorId(1L)).thenReturn(List.of(testBook));
+                mockMvc.perform(post("/api/books/{isbn}/read-events", isbn)
+                                .principal(mockAuthentication)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id").value(100));
 
-            mockMvc.perform(get("/api/books/author/1"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1))
-                    .andExpect(jsonPath("$[0].isbn").value("9781234567890"));
-
-            verify(bookService).findByAuthorId(1L);
+                verify(bookReadEventService).createReadEvent(eq("test@test.com"), eq(isbn), any());
         }
 
         @Test
-        @DisplayName("Should return empty list when author has no books")
-        void getBooksByAuthor_NoBooksForAuthor_ReturnsEmptyList() throws Exception {
-            when(bookService.findByAuthorId(1L)).thenReturn(Collections.emptyList());
+        void testGetLatestBookReadEvent() throws Exception {
+                String isbn = "123";
+                BookReadEvent event = new BookReadEvent();
+                event.setId(200L);
 
-            mockMvc.perform(get("/api/books/author/1"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isEmpty());
+                when(bookReadEventService.getLatestReadEvent("test@test.com", isbn))
+                                .thenReturn(event);
+
+                mockMvc.perform(get("/api/books/{isbn}/read-event/latest", isbn)
+                                .principal(mockAuthentication))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(200));
         }
-    }
+
+        @Test
+        void testGetBookReadingSessions() throws Exception {
+                String isbn = "123";
+                User user = new User();
+                user.setId(1L);
+
+                when(userService.getUserByEmail("test@test.com")).thenReturn(user);
+                when(readingSessionService.findByUserAndIsbn(user, isbn))
+                                .thenReturn(Collections.emptyList());
+
+                mockMvc.perform(get("/api/books/{isbn}/reading-sessions", isbn)
+                                .principal(mockAuthentication))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").isArray());
+
+                verify(userService).getUserByEmail("test@test.com");
+                verify(readingSessionService).findByUserAndIsbn(user, isbn);
+        }
+
+        @Test
+        void testGetBookReadEvents() throws Exception {
+                String isbn = "123";
+                User user = new User();
+                user.setId(1L);
+
+                when(userService.getUserByEmail("test@test.com")).thenReturn(user);
+                when(bookReadEventService.findByUserAndIsbn(1L, isbn))
+                                .thenReturn(Collections.emptyList());
+
+                mockMvc.perform(get("/api/books/{isbn}/reading-events", isbn)
+                                .principal(mockAuthentication))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").isArray());
+
+                verify(bookReadEventService).findByUserAndIsbn(1L, isbn);
+        }
 }

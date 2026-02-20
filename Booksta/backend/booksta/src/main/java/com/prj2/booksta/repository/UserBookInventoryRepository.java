@@ -14,8 +14,4 @@ public interface UserBookInventoryRepository extends JpaRepository<UserBookInven
     List<UserBookInventory> findByBookIsbn(String bookIsbn);
 
     List<UserBookInventory> findByBookIsbnAndQuantityGreaterThan(String bookIsbn, Long minQuantity);
-
-    void deleteByBook_Isbn(String isbn);
-
-    void deleteByUserId(Long userId);
 }
